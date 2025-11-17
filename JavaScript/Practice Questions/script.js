@@ -114,29 +114,93 @@
 
 // Question 12 - Ask user for words until they type “stop”. Count how many times they typed “yes”
 // Loop until "stop" is typed. Count "yes".
+// let count = 0
+// let word = prompt("Enter any word : ")
+// while(word !== "stop") {
+//     if(word === "stop") break
+//     word = prompt("Enter any word : ")
+//     count++
+// }
+// console.log(`You typed ${count} times`)
 
 
-
-// Question 13 - 
-
-
-// Question 14 - 
-
-
-// Question 15 - 
-
-
-// Question 16 - 
+// Question 13 - Print numbers divisible by 7 from 1 to 50
+// Use modulo % and loop.
+// let num = prompt("Enter any number : ")
+// num = parseInt(num)
+// for(i =1; i <= 50; i++){
+//     if(i % num === 0){
+//         console.log(i)
+//     }
+// }
 
 
-// Question 17 - 
+// Question 14 - Sum of all odd numbers from 1 to 30
+// Add only odd numbers. Print final sum.
+// let sum = 0
+// for(i =1; i <= 30; i++){
+//     if(i % 2 !== 0){
+//         sum += i
+//     }   
+// }
+// console.log(`Sum of all odd numbers from 1 to 30 is ${sum}`)
 
 
-// Question 18 - 
+// Question 15 - Keep asking number until user enters an even number
+// Use while loop. Stop only if input is even.
+// let num = prompt("Enter any number : ")
+// num = parseInt(num)
+// while(num % 2 !== 0){
+//     if(num % 2 === 0) break
+//     num = prompt("Enter any number : ")
+//     num = parseInt(num)
+// }
+// console.log("You entered even number")
 
 
-// Question 19 - 
+// Question 16 - Print numbers between two user inputs
+// Input start and end using prompt() → print all between.
+// let num1 = prompt("Enter starting number : ")
+// let num2 = prompt("Enter ending number : ")
+// num1 = parseInt(num1)
+// num2 = parseInt(num2)
+// for(i = num1; i <= num2; i++){
+//     console.log(i)
+// }
 
 
-// Question 20 - 
+// Question 17 - Print only first 3 odd numbers from 1 to 20
+// Use loop. Stop with break after 3 odd prints.
+// let count = 0
+// for(i = 1; i <= 20; i++){
+//     if(i % 2 !== 0){
+//         console.log(i)
+//         count++
+//     }
+//     if(count === 3) break
+// }
 
+// Question 18 - Ask user 5 numbers. Count how many are positive
+// Use loop + condition + counter.
+// let count = 0;
+// for(let i = 1; i <= 5; i++) {
+//     let num = parseInt(prompt(`Enter number ${i} : `));
+//     if(num > 0) count++;
+// }
+// console.log(`You entered ${count} positive numbers`);
+// console.log(`You entered ${5 - count} negative numbers`);
+
+// Question 19 - ATM Simulator – Allow 3 withdrawals
+// Start with ₹1000 balance. Ask withdrawal amount 3 times.
+// If enough balance → deduct
+// Else → print “Insufficient balance”
+let balance = 1000;
+for(let i = 1; i <= 3; i++) {
+    let withdraw = parseInt(prompt(`Enter withdrawal amount ${i} : `));
+    if(withdraw <= balance) {
+        balance -= withdraw;
+        console.log(`Withdrawal successful. Remaining balance: ₹${balance}`);
+    } else {
+        console.log("Insufficient balance");
+    }
+}
