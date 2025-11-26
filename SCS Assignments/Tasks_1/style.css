@@ -1,0 +1,86 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+html,body{
+    height: 100%;
+    width: 100%;
+}
+
+body{
+    background: hsla(208, 67%, 81%, 1);
+
+background: linear-gradient(45deg, hsla(208, 67%, 81%, 1) 0%, hsla(37, 65%, 85%, 1) 100%, hsla(301, 65%, 83%, 1) 100%);
+
+background: -moz-linear-gradient(45deg, hsla(208, 67%, 81%, 1) 0%, hsla(37, 65%, 85%, 1) 100%, hsla(301, 65%, 83%, 1) 100%);
+
+background: -webkit-linear-gradient(45deg, hsla(208, 67%, 81%, 1) 0%, hsla(37, 65%, 85%, 1) 100%, hsla(301, 65%, 83%, 1) 100%);
+
+filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#AED1EF", endColorstr="#F2DFC1", GradientType=1 );
+}
+
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2.5rem
+}
+
+#navFirst{
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: medium;
+}
+
+#navFirst_1{
+    color: black;
+}
+
+#navFirst_2{
+    color: white
+}
+
+#navFirst_2 img{
+    width: 1.3rem;
+    height: 1.3rem;
+}
+
+#navSecond{
+    display: flex;
+    justify-content: space-between;
+    gap: 3rem;
+}
+
+#navThird{
+    border: 1px solid black;
+    padding: 0.5rem 1rem;
+    border-radius: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#navThird img{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+#shirt img{
+    position: absolute;
+    top: 0.5%;
+    left: 16%;
+    height: 55vw;
+    width: 75vw;
+}
+
+#card{
+    height: 5rem;
+    width: 20rem;
+    background: rgb(165, 24, 24);
+    border-radius: 0.8rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
