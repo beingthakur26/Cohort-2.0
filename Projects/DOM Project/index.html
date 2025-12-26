@@ -8,6 +8,134 @@
 </head>
 <body>
     
+    <div id="main">
+        <div class="header">
+            <h1>Kanban Board</h1>
+            <button id="add-column-btn">Add New Task</button>
+        </div>
+
+        <div id="container">
+            <div class="column" data-status="backlog" >
+                <div class="column-header">
+                    <h2>Backlog</h2>
+                    <span>0</span>
+                </div>
+
+                <div draggable="true" class="card">
+                    <h3>Task 1</h3>
+                    <p>Task Description</p>
+                    <div class="card-actions">
+                        <button class="update">Update</button>
+                        <button class="delete">Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column hover-over" data-status="todo">
+                <div class="column-header">
+                    <h2>To Do</h2>
+                    <span>0</span>
+                </div>
+
+                <div draggable="true" class="card">
+                    <h3>Task 1</h3>
+                    <p>Task Description</p>
+                    <div class="card-actions">
+                        <button class="update">Update</button>
+                        <button class="delete">Delete</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="column"  data-status="progress">
+                <div class="column-header" >
+                    <h2>In Progress</h2>
+                    <span>0</span>
+                </div>
+
+                <div draggable="true" class="card" id="in-progress">
+                    <h3>Task 1</h3>
+                    <p>Task Description</p>
+                    <div class="card-actions">
+                        <button class="delete">Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column" data-status="done">
+                <div class="column-header">
+                    <h2>Done</h2>
+                    <span>0</span>
+                </div>
+
+                <div draggable="true" class="card" id="done">
+                    <h3>Task 1</h3>
+                    <p>Task Description</p>
+                    <div class="card-actions">
+                        <button class="delete">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- <div id="container">
+            <div class="backlog">
+                <div class="header">
+                    <h2>Backlog</h2>
+                    <h5>0</h5>
+                </div>
+                <div draggable="true" class="card">
+                    <h3>Task 1</h3>
+                    <p>Task Description</p>
+                    <div class="buttons">
+                        <button class="update-btn" type="button">Update</button>
+                        <button class="delete-btn" type="button">Delete</button>
+                    </div>
+                </div>
+            </div>
+            <div class="to-do">
+                <div class="header">
+                    <h2>To Do</h2>
+                    <h5>0</h5>
+                </div>
+                <div draggable="true" class="card">
+                    <h3>Task 1</h3>
+                    <p>Task Description</p>
+                    <div class="buttons">
+                        <button class="update-btn" type="button">Update</button>
+                        <button class="delete-btn" type="button">Delete</button>
+                    </div>
+                </div>
+            </div>
+            <div class="in-progress">
+                <div class="header">
+                    <h2>In Progress</h2>
+                    <h5>0</h5>
+                </div>
+                <div draggable="true" class="card">
+                    <h3>Task 1</h3>
+                    <p>Task Description</p>
+                    <button class="delete-btn" type="button">Delete</button>
+                </div>
+            </div>
+            <div class="done">
+                <div class="header">
+                    <h2>Done</h2>
+                    <h5>0</h5>
+                </div>
+                <div draggable="true" class="card">
+                    <h3>Task 1</h3>
+                    <p>Task Description</p>
+                    <button class="delete-btn" type="button">Delete</button>
+                </div>
+            </div>
+        </div> -->
+        <div>
+
+        </div>
+    </div>
     
 
 

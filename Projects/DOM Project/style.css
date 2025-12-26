@@ -1,0 +1,509 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body{
+    width: 100%;
+    height: 100%;
+}
+
+:root {
+/* BASE BACKGROUND COLORS */
+  --bg-app: #0F172A;        /* Entire app background */
+  --bg-board: #020617;     /* Board container surface */
+  --bg-column: #020617;    /* Column background */
+  --bg-card: #0d17432a;      /* Task card background */
+  --bg-hover: rgba(2, 6, 23, 0.9); /* Hover state overlay */
+
+/* BORDERS & DIVIDERS */
+  --border-default: #1E293B; /* Card & column borders */
+  --border-muted: #334155;  /* Subtle separators */
+
+/* TEXT COLORS */
+  --text-primary: #E5E7EB;   /* Titles & main content */
+  --text-secondary: #9CA3AF; /* Metadata & descriptions */
+  --text-muted: #64748B;    /* Placeholders & hints */
+  --text-inverse: #020617;  /* Text on light accents */
+
+/* STATUS / ACCENT COLORS */
+  --status-todo: #38BDF8;      /* Neutral starting state */
+  --status-progress: #FACC15; /* Active / working */
+  --status-review: #A855F7;   /* Review / thinking */
+  --status-blocked: #EF4444;  /* Attention required */
+  --status-done: #22C55E;     /* Completed / success */
+
+/* TAG / LABEL STYLES */
+  --tag-bg: #020617;        /* Tag background */
+  --tag-text: #9CA3AF;     /* Tag text color */
+
+/* TYPOGRAPHY */
+  --font-primary: "Inter", system-ui, sans-serif; /* Main UI font */
+  --font-mono: "JetBrains Mono", monospace;       /* IDs, counts */
+
+/* Font sizes */
+  --text-xs: 12px;  /* Micro labels */
+  --text-sm: 14px;  /* Metadata */
+  --text-md: 16px;  /* Card titles */
+  --text-lg: 18px;  /* Column headers */
+  --text-xl: 20px;  /* Modals / key actions */
+
+/* Font weights */
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+
+/* SPACING SCALE */
+  --space-2xs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+
+/* BORDER RADIUS */
+  --radius-sm: 6px;   /* Tags, badges */
+  --radius-md: 10px;  /* Cards */
+  --radius-lg: 14px;  /* Columns, modals */
+
+/* SHADOWS */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);   /* Minimal depth */
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);  /* Hover */
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5); /* Drag / modal */
+
+/* LAYOUT TOKENS */
+  --column-width: 278px; 
+  --card-width: 250px; /* Fixed column width */
+  --column-padding: 12px;
+  --card-padding: 14px;
+
+/* MOTION & INTERACTION */
+  --transition-fast: 0.15s ease;   /* Micro interactions */
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Hover / expand */
+
+  --hover-lift: translateY(-2px);  /* Card hover lift */
+  --drag-scale: scale(1.05);       /* Drag feedback */
+}
+
+body{
+    background-color: var(--bg-app);
+    font-family: var(--font-primary);
+}
+
+#main{
+    padding: var(--space-lg);
+    width: 100%;
+    height: 100%;
+}
+
+.header{
+    color: var(--text-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: var(--space-lg);
+    padding: var(--space-sm);
+}
+
+#add-column-btn{
+    padding: var(--space-sm) var(--space-md);
+    background-color: var(--status-todo);
+    color: var(--text-inverse);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-normal);
+}
+
+/* -------- Layout -------- */
+
+#container {
+  display: flex;
+  gap: var(--space-lg);
+  padding: var(--space-xl);
+  overflow-x: auto;
+}
+
+/* -------- Column -------- */
+
+.column {
+  width: var(--column-width);
+  padding: var(--space-md);
+  background: var(--bg-column);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  color: var(--text-primary);
+  transition: all var(--transition-normal);
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.column-header h2 {
+  font-size: var(--text-xl);
+}
+
+.column-header span {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* -------- Card -------- */
+
+.card {
+  margin-top: var(--space-lg);
+  padding: var(--card-padding);
+  width: var(--card-width);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  cursor: grab;
+}
+
+.card h3 {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+}
+
+.card p {
+  margin: var(--space-sm) 0 var(--space-md);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+/* -------- Card Actions -------- */
+
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card button {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  color: var(--text-inverse);
+}
+
+.card .update {
+  background: var(--status-review);
+}
+
+.card .delete {
+  background: var(--status-blocked);
+}
+
+#in-progress .card-actions{
+    display: flex;
+    justify-content: end;
+}
+
+#done .card-actions{
+    display: flex;
+    justify-content: end;
+}
+
+.hover-over:hover{
+    border: var(--border-muted) solid;
+    scale: 1.05;
+}
+
+
+
+
+/* #container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+    width: 100%;
+    height: 100%;
+    padding: var(--space-xl);
+    margin-bottom: var(--space-lg);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+
+}
+
+.backlog{
+    background-color: var(--bg-column);
+    color: var(--text-primary);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    width: var(--column-width);
+    border: var(--border-default) solid;
+    box-shadow: var(--shadow-md);
+}
+
+.backlog .header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.backlog h2{
+    font-size: var(--text-xl);
+}
+
+.backlog h5{
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+.backlog .card{
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    padding: var(--space-md);
+    margin-top: var(--space-lg);
+    border-radius: var(--radius-md);
+    width: var(--card-width);
+    border: var(--border-default) solid;
+    box-shadow: var(--shadow-md);
+    cursor: grab;
+}
+
+.backlog .card h3{
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+}
+
+.backlog .card p{
+    color: var(--text-secondary);
+    font-size: var(--text-xs);
+    margin-top: var(--space-sm);
+    font-weight: var(--font-medium);
+    margin-bottom: var(--space-md);
+}
+
+.backlog .card .buttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.backlog .card .buttons button{
+    padding: var(--space-sm) var(--space-md);
+    color: var(--text-inverse);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-normal);
+}
+
+.backlog .card .buttons .update-btn{
+    background-color: var(--status-review);
+}
+
+.backlog .card .buttons .delete-btn{
+    background-color: var(--status-blocked);
+}
+
+.to-do{
+    background-color: var(--bg-column);
+    color: var(--text-primary);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    width: var(--column-width);
+    border: var(--border-default) solid;
+    box-shadow: var(--shadow-md);
+}
+
+.to-do .header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.to-do .header h2{
+    font-size: var(--text-xl);
+}
+
+.to-do .header h5{
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+.to-do .card{
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    padding: var(--space-md);
+    margin-top: var(--space-lg);
+    border-radius: var(--radius-md);
+    width: var(--card-width);
+    border: var(--border-default) solid;
+    box-shadow: var(--shadow-md);
+    cursor: grab;
+}
+
+.to-do .card h3{
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+}
+
+.to-do .card p{
+    color: var(--text-secondary);
+    font-size: var(--text-xs);
+    margin-top: var(--space-sm);
+    font-weight: var(--font-medium);
+    margin-bottom: var(--space-md);
+}
+
+.to-do .card .buttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.to-do .card .buttons button{
+    padding: var(--space-sm) var(--space-md);
+    color: var(--text-inverse);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-normal);
+}
+
+.to-do .card .buttons .update-btn{
+    background-color: var(--status-review);
+}
+
+.to-do .card .buttons .delete-btn{
+    background-color: var(--status-blocked);
+}
+
+.in-progress{
+    background-color: var(--bg-column);
+    color: var(--text-primary);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    width: var(--column-width);
+    border: var(--border-default) solid;
+    box-shadow: var(--shadow-md);
+}
+
+.in-progress .header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.in-progress .header h2{
+    font-size: var(--text-xl);
+}
+
+.in-progress .header h5{
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+.in-progress .card{
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    padding: var(--space-md);
+    margin-top: var(--space-lg);
+    border-radius: var(--radius-md);
+    width: var(--card-width);
+    border: var(--border-default) solid;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    cursor: grab;
+}
+
+.in-progress .card h3{
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+}
+
+.in-progress .card p{
+    color: var(--text-secondary);
+    font-size: var(--text-xs);
+    margin-top: var(--space-sm);
+    font-weight: var(--font-medium);
+    margin-bottom: var(--space-md);
+}
+
+.in-progress .card button{
+    padding: var(--space-sm) var(--space-md);
+    color: var(--text-inverse);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-normal);
+    background-color: var(--status-blocked);
+    align-self: end;
+}
+
+.done{
+    background-color: var(--bg-column);
+    color: var(--text-primary);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    width: var(--column-width);
+    border: var(--border-default) solid;
+    box-shadow: var(--shadow-md);
+}
+
+.done .header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.done .header h2{
+    font-size: var(--text-xl);
+}
+
+.done .header h5{
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+.done .card{
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    padding: var(--space-md);
+    margin-top: var(--space-lg);
+    border-radius: var(--radius-md);
+    width: var(--card-width);
+    border: var(--border-default) solid;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    cursor: grab;
+}
+
+.done .card h3{
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+}
+
+.done .card p{
+    color: var(--text-secondary);
+    font-size: var(--text-xs);
+    margin-top: var(--space-sm);
+    font-weight: var(--font-medium);
+    margin-bottom: var(--space-md);
+}
+
+.done .card button{
+    align-self: end;
+    padding: var(--space-sm) var(--space-md);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-normal);
+    background-color: var(--status-blocked);
+    color: var(--text-inverse);
+} */
+
