@@ -1,0 +1,56 @@
+:root {
+  /* ===== Backgrounds ===== */
+  --bg-primary: #0f172a;      /* Main app background (NOT pure black) */
+  --bg-secondary: #111827;    /* Cards / panels */
+  --bg-muted: #1e293b;        /* Subtle sections / hover states */
+
+  /* ===== Text ===== */
+  --text-primary: #e5e7eb;    /* Main text */
+  --text-secondary: #cbd5e1;  /* Supporting text */
+  --text-muted: #94a3b8;      /* Placeholders / hints */
+
+  /* ===== Primary Action (Blue) ===== */
+  --primary-400: #38bdf8;
+  --primary-500: #0ea5e9;     /* Buttons, links */
+  --primary-600: #0284c7;     /* Hover */
+  --primary-700: #0369a1;     /* Active */
+
+  /* ===== Success / Progress ===== */
+  --success-400: #4ade80;
+  --success-500: #22c55e;
+
+  /* ===== Warning ===== */
+  --warning-400: #facc15;
+  --warning-500: #eab308;
+
+  /* ===== Error ===== */
+  --error-400: #f87171;
+  --error-500: #ef4444;
+
+  /* ===== Borders ===== */
+  --border-light: #1f2933;
+  --border-medium: #334155;
+
+  /* ===== Shadows ===== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+}
+
+html, body{
+    width: 100%;
+    height: 100%;
+    font-family: 'Aonic';
+}
+
+#main{
+    height: 100%;
+    width: 100%;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
