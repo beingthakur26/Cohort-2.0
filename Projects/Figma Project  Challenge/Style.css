@@ -1,0 +1,131 @@
+:root {
+  /* ===============================
+     COLOR SYSTEM (FIGMA-LIKE)
+  =============================== */
+
+  --color-bg-app: #ffffff;
+  --color-bg-canvas: #f5f5f5;
+  --color-bg-panel: #ffffff;
+  --color-bg-hover: #f0f0f0;
+  --color-bg-selected: #e5f3ff;
+
+  --color-primary: #0d99ff;
+  --color-primary-light: #e5f3ff;
+  --color-success: #14ae5c;
+  --color-danger: #f24822;
+
+  --color-border: #e0e0e0;
+  --color-border-strong: #bdbdbd;
+
+  --color-text-main: #1e1e1e;
+  --color-text-secondary: #6e6e6e;
+  --color-text-muted: #9e9e9e;
+  --color-text-invert: #ffffff;
+
+  /* ===============================
+     TYPOGRAPHY
+  =============================== */
+
+  --font-family-base: Inter, -apple-system, BlinkMacSystemFont,
+                      "Segoe UI", Roboto, Arial, sans-serif;
+
+  --font-size-xs: 8px;
+  --font-size-sm: 12px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
+
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.4;
+
+  /* ===============================
+     SPACING / PADDING SYSTEM
+     (8px-based like Figma)
+  =============================== */
+
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+
+  /* Component padding */
+  --padding-xs: var(--space-4);
+  --padding-sm: var(--space-8);
+  --padding-md: var(--space-12);
+  --padding-lg: var(--space-16);
+
+  /* ===============================
+     BORDER RADIUS
+  =============================== */
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* ===============================
+     SHADOWS
+  =============================== */
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.12);
+
+  /* ===============================
+     INPUTS & CONTROLS
+  =============================== */
+
+  --input-height-sm: 28px;
+  --input-height-md: 32px;
+
+  --input-padding-x: var(--space-8);
+  --input-border: var(--color-border);
+  --input-border-focus: var(--color-primary);
+
+  /* ===============================
+     BUTTONS
+  =============================== */
+
+  --button-height: 32px;
+  --button-padding-x: var(--space-12);
+  --button-radius: var(--radius-md);
+
+  /* ===============================
+     ICONS
+  =============================== */
+
+  --icon-sm: 14px;
+  --icon-md: 16px;
+  --icon-lg: 20px;
+
+  /* ===============================
+     TRANSITIONS
+  =============================== */
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+
+  /* ===============================
+     Z-INDEX SYSTEM
+  =============================== */
+
+  --z-canvas: 1;
+  --z-element: 10;
+  --z-selected: 20;
+  --z-panel: 50;
+  --z-overlay: 100;
+
+  /* ===============================
+     CANVAS
+  =============================== */
+
+  --canvas-width: 900px;
+  --canvas-height: 600px;
+}
