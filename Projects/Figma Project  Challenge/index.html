@@ -8,7 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-    <div id="main" class="bg-[#1e1e1e] flex">
+    <div id="main" class="bg-[#1e1e1e] flex relative">
+
         <!-- Left Part / Sidebar -->
         <div id="left " class="bg-[#2c2c2c] h-[100vh] w-[250px] p-[var(--padding-md)] text-white">
             <div class="left-nav flex justify-between items-center mb-[var(--padding-md)]">
@@ -45,15 +46,204 @@
             <div class="layers">
                 <div class="flex items-center justify-between">
                     <h2 class="text-[10px]">Layers</h2>
+                    <div class="flex gap-1">
+                        <button id="layer-up-btn" class="p-1 hover:bg-[#383838] rounded" title="Bring Forward">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                        </button>
+                        <button id="layer-down-btn" class="p-1 hover:bg-[#383838] rounded" title="Send Backward">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="layers-list" class="flex flex-col gap-1 mt-2 overflow-y-auto max-h-[calc(100vh-200px)]">
+                    <!-- Dynamic Layers will appear here -->
                 </div>
             </div>
         </div>
+
         <!-- Center Part / Canvas Part -->
         <div id="center" class="h-[100vh] w-[100vw] ">
-            <div class="canvas ">
+            <div id="canvas" class="canvas h-full w-full relative">
                 
             </div>
         </div>
+
+        <!-- Toolbar -->
+         <div id="toolbar" class="h-[48px] bg-[#2c2c2c] absolute flex items-center bottom-[20px] left-[50%] translate-x-[-50%] px-2 rounded-[10px] shadow-lg gap-1 border border-[#444]">
+            
+            <!-- Move Tools -->
+            <div class="relative group text-white">
+                <div id="move-tool-btn" class="toolbar-btn flex items-center px-1 rounded hover:bg-[#383838] cursor-pointer">
+                    <div class="p-2 rounded bg-blue-500 text-white main-icon"> 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-pointer-2"><path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z"/></svg>
+                    </div>
+                    <div class="h-full flex items-center text-white justify-center w-[16px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down opacity-70 group-hover:opacity-100"><path d="m6 9 6 6 6-6"/></svg>
+                    </div>
+                </div>
+                <!-- Dropdown Menu -->
+                <div id="move-dropdown" class="hidden absolute bottom-full left-0 mb-2 w-48 bg-[#2c2c2c] border border-[#444] rounded-md shadow-lg py-1 z-50 text-white">
+                    <div class="tool-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer group" data-tool="move">
+                        <span class="w-4 flex justify-center check-icon opacity-100"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-pointer-2"><path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z"/></svg>
+                        <span class="text-xs">Move</span>
+                        <span class="ml-auto text-[10px] text-gray-400 group-hover:text-white">V</span>
+                    </div>
+                    <div class="tool-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer group" data-tool="hand">
+                        <span class="w-4 flex justify-center check-icon opacity-0"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hand"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+                        <span class="text-xs">Hand tool</span>
+                        <span class="ml-auto text-[10px] text-gray-400 group-hover:text-white">H</span>
+                    </div>
+                    <div class="tool-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer group" data-tool="scale">
+                        <span class="w-4 flex justify-center check-icon opacity-0"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scaling"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M14 15H9v-5"/><path d="M16 3h5v5"/><path d="M21 3 9 15"/></svg>
+                        <span class="text-xs">Scale</span>
+                        <span class="ml-auto text-[10px] text-gray-400 group-hover:text-white">K</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Frame Tools -->
+            <div class="relative group">
+                <div id="frame-tool-btn" class="toolbar-btn flex items-center px-1 rounded hover:bg-[#383838] cursor-pointer text-white">
+                    <div class="p-2 main-icon rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-frame"><line x1="22" x2="2" y1="6" y2="6"/><line x1="22" x2="2" y1="18" y2="18"/><line x1="6" x2="6" y1="2" y2="22"/><line x1="18" x2="18" y1="2" y2="22"/></svg>
+                    </div>
+                    <div class="h-full flex items-center justify-center w-[16px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down opacity-70 group-hover:opacity-100"><path d="m6 9 6 6 6-6"/></svg>
+                    </div>
+                </div>
+                <!-- Dropdown Menu -->
+                <div id="frame-dropdown" class="hidden absolute bottom-full left-0 mb-2 w-48 bg-[#2c2c2c] border border-[#444] rounded-md shadow-lg py-1 z-50 text-white">
+                    <div class="tool-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer group" data-tool="frame">
+                        <span class="w-4 flex justify-center check-icon opacity-100"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-frame"><line x1="22" x2="2" y1="6" y2="6"/><line x1="22" x2="2" y1="18" y2="18"/><line x1="6" x2="6" y1="2" y2="22"/><line x1="18" x2="18" y1="2" y2="22"/></svg>
+                        <span class="text-xs">Frame</span>
+                        <span class="ml-auto text-[10px] text-gray-400 group-hover:text-white">F</span>
+                    </div>
+                    <div class="tool-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer group" data-tool="section">
+                        <span class="w-4 flex justify-center check-icon opacity-0"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-dashed"><path d="M5 3a2 2 0 0 0-2 2"/><path d="M19 3a2 2 0 0 1 2 2"/><path d="M21 19a2 2 0 0 1-2 2"/><path d="M5 21a2 2 0 0 1-2-2"/><path d="M9 3h1"/><path d="M14 3h1"/><path d="M3 9v1"/><path d="M3 14v1"/><path d="M21 9v1"/><path d="M21 14v1"/><path d="M9 21h1"/><path d="M14 21h1"/></svg>
+                        <span class="text-xs">Section</span>
+                        <span class="ml-auto text-[10px] text-gray-400 group-hover:text-white">Shift S</span>
+                    </div>
+                    <div class="tool-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer group" data-tool="slice">
+                        <span class="w-4 flex justify-center check-icon opacity-0"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scissors"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>
+                        <span class="text-xs">Slice</span>
+                        <span class="ml-auto text-[10px] text-gray-400 group-hover:text-white">S</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shape Tools (With Dropdown) -->
+            <div class="relative group">
+                <div id="shape-tool-btn" class="toolbar-btn flex items-center px-1 rounded hover:bg-[#383838] cursor-pointer text-white">
+                    <div class="p-2 main-icon rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
+                    </div>
+                    <div class="h-full flex items-center justify-center w-[16px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down opacity-70 group-hover:opacity-100"><path d="m6 9 6 6 6-6"/></svg>
+                    </div>
+                </div>
+                <!-- Dropdown Menu -->
+                <div id="shape-dropdown" class="hidden absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-[#2c2c2c] border border-[#444] rounded-md shadow-lg py-1 z-50 text-white">
+                    <div class="shape-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer" data-shape="rectangle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
+                        <span class="text-xs">Rectangle</span>
+                        <span class="ml-auto text-[10px] text-gray-400">R</span>
+                    </div>
+                    <div class="shape-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer" data-shape="line">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>
+                        <span class="text-xs">Line</span>
+                        <span class="ml-auto text-[10px] text-gray-400">L</span>
+                    </div>
+                    <div class="shape-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer" data-shape="arrow">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        <span class="text-xs">Arrow</span>
+                        <span class="ml-auto text-[10px] text-gray-400">Shift L</span>
+                    </div>
+                    <div class="shape-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer" data-shape="ellipse">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+                        <span class="text-xs">Ellipse</span>
+                        <span class="ml-auto text-[10px] text-gray-400">O</span>
+                    </div>
+                    <div class="shape-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer" data-shape="polygon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l9-18 9 18H3z"/></svg>
+                        <span class="text-xs">Polygon</span>
+                    </div>
+                    <div class="shape-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer" data-shape="star">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <span class="text-xs">Star</span>
+                    </div>
+                    <div class="shape-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer" data-shape="image">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                        <span class="text-xs">Place Image...</span>
+                        <span class="ml-auto text-[10px] text-gray-400">Ctrl Shift K</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pen Tools -->
+            <div class="relative group">
+                <div id="pen-tool-btn" class="toolbar-btn flex items-center px-1 rounded hover:bg-[#383838] cursor-pointer text-white">
+                    <div class="p-2 main-icon rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen-tool"><path d="M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"/><path d="m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18"/><path d="m2.3 2.3 7.286 7.286"/><circle cx="11" cy="11" r="2"/></svg>
+                    </div>
+                    <div class="h-full flex items-center justify-center w-[16px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down opacity-70 group-hover:opacity-100"><path d="m6 9 6 6 6-6"/></svg>
+                    </div>
+                </div>
+                <!-- Dropdown Menu -->
+                <div id="pen-dropdown" class="hidden absolute bottom-full left-0 mb-2 w-48 bg-[#2c2c2c] border border-[#444] rounded-md shadow-lg py-1 z-50 text-white">
+                    <div class="tool-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer group" data-tool="pen">
+                        <span class="w-4 flex justify-center check-icon opacity-100"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen-tool"><path d="M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"/><path d="m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18"/><path d="m2.3 2.3 7.286 7.286"/><circle cx="11" cy="11" r="2"/></svg>
+                        <span class="text-xs">Pen</span>
+                        <span class="ml-auto text-[10px] text-gray-400 group-hover:text-white">P</span>
+                    </div>
+                    <div class="tool-item flex items-center gap-2 px-3 py-2 hover:bg-[#0d99ff] hover:text-white cursor-pointer group" data-tool="pencil">
+                        <span class="w-4 flex justify-center check-icon opacity-0"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                        <span class="text-xs">Pencil</span>
+                        <span class="ml-auto text-[10px] text-gray-400 group-hover:text-white">Shift P</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Tool -->
+            <div id="text-tool-btn" class="toolbar-btn flex items-center px-1 rounded hover:bg-[#383838] cursor-pointer text-white">
+                <div class="p-2 main-icon rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-type"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" style="display:none"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="12" x2="12" y1="6" y2="21"/><line x1="9" x2="15" y1="21" y2="21"/></svg>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="w-[1px] h-[24px] bg-[#555] mx-1"></div>
+
+            <!-- Resources Tool -->
+            <div id="resources-tool-btn" class="toolbar-btn flex items-center px-1 rounded hover:bg-[#383838] cursor-pointer text-white">
+                <div class="p-2 main-icon rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-component"><path d="M5.5 8.5 9 12l-3.5 3.5L2 12l3.5-3.5Z"/><path d="m12 2 3.5 3.5L12 7 8.5 3.5 12 2Z"/><path d="m12 17 3.5 3.5L12 24l-3.5-3.5L12 17Z"/><path d="m18.5 8.5 3.5 3.5-3.5 3.5L15 12l3.5-3.5Z"/></svg>
+                </div>
+            </div>
+
+            <!-- Hand Tool -->
+            <div id="hand-tool-btn" class="toolbar-btn flex items-center px-1 rounded hover:bg-[#383838] cursor-pointer text-white">
+                <div class="p-2 main-icon rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hand"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+                </div>
+            </div>
+
+            <!-- Comment Tool -->
+             <div id="comment-tool-btn" class="toolbar-btn flex items-center px-1 rounded hover:bg-[#383838] cursor-pointer text-white">
+                <div class="p-2 main-icon rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                </div>
+            </div>
+         </div>
+
         <!-- Right Part / Properties Part -->
         <div id="right" class="h-[100vh] w-[250px] bg-[#2c2c2c] p-[var(--padding-md)] text-white">
             <div class="right-nav flex items-center justify-between mb-[var(--padding-md)]">
@@ -81,38 +271,108 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
             </div>
+            
+            <!-- Properties Panel Content -->
+            <div id="properties-panel" class="mt-4">
+                <!-- Transform Section -->
+                <div class="mb-4">
+                    <h3 class="text-[10px] mb-2 text-gray-400">Layout</h3>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <div class="flex items-center bg-[#383838] rounded px-2 py-1">
+                            <span class="text-[10px] text-gray-400 w-4">X</span>
+                            <input type="number" id="input-x" class="bg-transparent text-[11px] w-full focus:outline-none text-right" value="0">
+                        </div>
+                        <div class="flex items-center bg-[#383838] rounded px-2 py-1">
+                            <span class="text-[10px] text-gray-400 w-4">Y</span>
+                            <input type="number" id="input-y" class="bg-transparent text-[11px] w-full focus:outline-none text-right" value="0">
+                        </div>
+                        <div class="flex items-center bg-[#383838] rounded px-2 py-1">
+                            <span class="text-[10px] text-gray-400 w-4">W</span>
+                            <input type="number" id="input-width" class="bg-transparent text-[11px] w-full focus:outline-none text-right" value="0">
+                        </div>
+                        <div class="flex items-center bg-[#383838] rounded px-2 py-1">
+                            <span class="text-[10px] text-gray-400 w-4">H</span>
+                            <input type="number" id="input-height" class="bg-transparent text-[11px] w-full focus:outline-none text-right" value="0">
+                        </div>
+                    </div>
+                     <div class="flex items-center bg-[#383838] rounded px-2 py-1">
+                        <span class="text-[10px] text-gray-400 w-4">R</span>
+                        <input type="number" id="input-rotation" class="bg-transparent text-[11px] w-full focus:outline-none text-right" value="0">
+                    </div>
+                </div>
+
+                <hr class="my-[var(--padding-md)] border-gray-600"/>
+
+                <!-- Fill Section -->
+                <div class="mb-4">
+                     <h3 class="text-[10px] mb-2 text-gray-400">Fill</h3>
+                     <div class="flex items-center gap-2 bg-[#383838] rounded p-1">
+                        <input type="color" id="input-color" class="w-4 h-4 rounded cursor-pointer border-none p-0" value="#0d99ff">
+                        <input type="text" id="input-color-hex" class="bg-transparent text-[11px] w-full focus:outline-none" value="#0d99ff">
+                     </div>
+                </div>
+
+                <hr class="my-[var(--padding-md)] border-gray-600"/>
+                
+                <div class="mb-4">
+                     <button id="delete-btn" class="w-full bg-red-500/10 text-red-500 hover:bg-red-500/20 text-[11px] py-1 rounded border border-red-500/50">Delete Selected</button>
+                </div>
+            </div>
             <hr class="my-[var(--padding-md)] border-gray-600"/>
             <div class="pages">
-                <h2 class="text-[10px]">Page</h2>
-                <div class="flex items-center my-[var(--padding-sm)] mx-[var(--padding-md)] bg-[#383838] rounded-sm text-[9px]">
-                    <div class="flex items-center gap-1 px-[var(--padding-xs)] py-[var(--padding-xs)]">
-                        <h2>Page 1</h2>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
-                    </div>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-[10px]">Pages</h2>
+                    <button id="add-page-btn" class="p-1 hover:bg-[#383838] rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                    </button>
+                </div>
+                <div id="pages-list" class="flex flex-col gap-1 mt-2 overflow-y-auto max-h-[150px]">
+                    <!-- Dynamic Pages -->
                 </div>
             </div>
             <hr class="my-[var(--padding-md)] border-gray-600"/>
             <div class="variable">
                 <div class="flex items-center justify-between">
                     <h2 class="text-[10px]">Variables</h2>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-pull-request-draft-icon lucide-git-pull-request-draft"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M18 6V5"/><path d="M18 11v-1"/><line x1="6" x2="6" y1="9" y2="21"/></svg>
+                    <button id="add-variable-btn" class="p-1 hover:bg-[#383838] rounded">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                    </button>
+                </div>
+                <div id="variables-list" class="flex flex-col gap-1 mt-2">
+                    <!-- Dynamic Variables -->
                 </div>
             </div>
             <hr class="my-[var(--padding-md)] border-gray-600"/>
             <div class="style">
                 <div class="flex items-center justify-between">
                     <h2 class="text-[10px]">Styles</h2>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                    <button id="add-style-btn" class="p-1 hover:bg-[#383838] rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                    </button>
+                </div>
+                 <div id="styles-list" class="flex flex-col gap-1 mt-2">
+                    <!-- Dynamic Styles -->
                 </div>
             </div>
             <hr class="my-[var(--padding-md)] border-gray-600"/>
             <div class="export">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between mb-2">
                     <h2 class="text-[10px]">Export</h2>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                 </div>
+                <div class="flex flex-col gap-2">
+                    <button id="export-json-btn" class="bg-[#383838] hover:bg-[#444] text-[10px] py-1 px-2 rounded w-full text-left">Export JSON</button>
+                    <button id="export-html-btn" class="bg-[#383838] hover:bg-[#444] text-[10px] py-1 px-2 rounded w-full text-left">Export HTML</button>
+                </div>
             </div>
         </div>
+
     </div>
+
+
+
+
+
+    <script src="script.js"></script>
 </body>
 </html>
