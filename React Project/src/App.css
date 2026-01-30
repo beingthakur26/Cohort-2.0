@@ -1,0 +1,102 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+main {
+  width: 100%;
+  height: 100%;
+  background: url(.././public/wallpaper1.avif);
+  background-size: cover;
+  background-position: center;
+}
+
+body {
+  background-color: #000;
+  color: white;
+}
+
+.dock {
+  display: flex;
+  gap: 0.75rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 1rem;
+  background-color: rgb(63, 53, 53);
+  padding-inline: 1rem;
+  padding-block: 0.75rem;
+  border-radius: 0.75rem;
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
+}
+.dock .icon {
+  padding: 0.65rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1/1;
+  width: 2.75rem;
+  height: 2.75rem;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.dock .icon img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.dock .github,
+.dock .cli {
+  background-color: black;
+}
+.dock .note {
+  background: linear-gradient(to bottom, rgb(255, 179, 87), rgb(255, 153, 28));
+}
+.dock .pdf {
+  background: linear-gradient(to bottom, rgb(255, 65, 78), rgb(255, 25, 40));
+}
+.dock .calender,
+.dock .mail {
+  background: linear-gradient(to bottom, rgb(105, 94, 255), rgb(66, 52, 255));
+}
+.dock .spotify {
+  background: linear-gradient(to bottom, rgb(78, 176, 33), rgb(53, 142, 12));
+}
+.dock .link {
+  background: linear-gradient(to bottom, rgb(163, 97, 170), rgb(142, 33, 154));
+}
+.dock .icon:hover {
+  transform: scale(1.25) translateY(-20%);
+}
+.dock .icon:hover + .icon,
+.dock .icon:has(+ .icon:hover) {
+  transform: scale(1.1) translateY(-10%);
+}
+
+nav {
+  width: 100%;
+  padding-inline: 0.75rem;
+  padding-block: 0.5rem;
+  background-color: rgba(158, 158, 158, 0.1058823529);
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
+}
+nav p {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+nav .left {
+  display: flex;
+  gap: 1rem;
+}
+nav .apple-icon {
+  display: flex;
+  align-items: center;
+}/*# sourceMappingURL=App.css.map */

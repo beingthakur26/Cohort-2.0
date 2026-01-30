@@ -1,8 +1,14 @@
 import React from 'react'
+import './App.scss'
+import Doc from './Components/Doc'
+import Nav from './Components/Nav'
 
 const App = () => {
   return (
-    <div>App</div>
+    <main>
+      <Nav/>
+      <Doc/>
+    </main>
   )
 }
 
