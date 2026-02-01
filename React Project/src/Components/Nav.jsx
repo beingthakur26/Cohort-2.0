@@ -19,11 +19,13 @@ const Nav = () => {
             <div className="nav-item">
                 <p>Terminal</p>
             </div>
-            {/* <div className="wifi-icon">
-                <img src=".././public/navbar-icons/wifi.svg" alt="wifi" />
-            </div> */}
+            
         </div>
-        <div className="right"></div>
+        <div className="right">
+            <div className="wifi-icon">
+                <img src=".././public/navbar-icons/wifi.svg" alt="wifi" />
+            </div>
+        </div>
     </nav>
   )
 }
