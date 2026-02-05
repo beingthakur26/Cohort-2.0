@@ -2,7 +2,7 @@ import React from "react";
 import MacWindow from "./MacWindow";
 import Terminal from "react-console-emulator";
 
-const Cli = () => {
+const Cli = ({windowName, activeWindow, setActiveWindow}) => {
   const commands = {
     echo: {
       description: "Echo a passed string.",
@@ -76,7 +76,7 @@ Try starting with:
 `;
 
   return (
-    <MacWindow>
+    <MacWindow windowName={windowName} activeWindow={activeWindow} setActiveWindow={setActiveWindow}>
       <div className="cli-window">
         <Terminal
           className="terminal"

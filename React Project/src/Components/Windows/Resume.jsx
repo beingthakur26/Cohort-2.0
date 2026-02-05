@@ -1,9 +1,9 @@
 import React from 'react'
 import MacWindow from './MacWindow'
 
-const Resume = () => {
+const Resume = ({windowName, activeWindow, setActiveWindow}) => {
   return (
-    <MacWindow>
+    <MacWindow windowName={windowName} activeWindow={activeWindow} setActiveWindow={setActiveWindow}>
         <div className="resume-window">
           <iframe src="/resume.pdf" frameBorder="0"></iframe>
         </div>

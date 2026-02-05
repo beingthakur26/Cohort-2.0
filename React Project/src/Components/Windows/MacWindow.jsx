@@ -1,7 +1,7 @@
 import React from "react";
 import { Rnd } from "react-rnd";
 
-const MacWindow = ({ children, width=900, height=600 }) => {
+const MacWindow = ({ children, width=900, height=600, windowName, activeWindow, setActiveWindow }) => {
   return (
     <Rnd
       default={{
@@ -17,12 +17,12 @@ const MacWindow = ({ children, width=900, height=600 }) => {
       <div className="window ">
         <div className="nav">
           <div className="dots">
-            <div className="dot red"></div>
+            <div className="dot red" onClick={() => setActiveWindow({ [windowName]: false })}></div>
             <div className="dot yellow"></div>
             <div className="dot green"></div>
           </div>
           <div className="title">
-            <p>manassingh - zsh</p>
+            <p>{windowName} - zsh</p>
           </div>
         </div>
         <div className="main-content">{children}</div>
