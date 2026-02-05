@@ -1,14 +1,14 @@
 import React from "react";
 import { Rnd } from "react-rnd";
 
-const MacWindow = ({ children }) => {
+const MacWindow = ({ children, width=900, height=600 }) => {
   return (
     <Rnd
       default={{
         x: 100,
         y: 100,
-        width: 900,
-        height: 600,
+        width: width,
+        height: height,
       }}
       minWidth={500}
       minHeight={400}
