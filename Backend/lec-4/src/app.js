@@ -21,5 +21,9 @@ app.post("/pages", (req, res) => {
 app.get("/pages", (req, res) => {
     res.json(pages);
 });
+
+app.delete("/pages", () => {
+    
+})
     
 module.exports = app;
