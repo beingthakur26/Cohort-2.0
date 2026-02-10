@@ -13,17 +13,19 @@ const pages = [];
 app.post("/pages", (req, res) => {
     const page = req.body;
     pages.push(page);
-    console.log(page);
-
-    res.json({ message: "Page added successfully" });
+    res.send("Page added successfully");
 });
 
 app.get("/pages", (req, res) => {
-    res.json(pages);
+    res.send(pages);
 });
 
-app.delete("/pages", () => {
-    
+app.delete("/pages/:index", (req, res) => {
+    delete pages[req.params.index];
+    // pages[req.params.index] = null;
+
+
+    res.send("pages deleted successfully")
 })
     
 module.exports = app;
