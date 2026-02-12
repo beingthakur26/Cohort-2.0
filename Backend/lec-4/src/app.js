@@ -25,6 +25,10 @@ app.delete("/pages/:index", (req, res) => {
     res.send("pages deleted successfully")
 })
 
- 
+app.patch("/pages/:index", (req, res) => {
+    pages[ req.params.index ].content = req.body.content
+    pages[ req.params.index ].title = req.body.title
+    res.send("pages updated successfully")
+})
     
 module.exports = app;
