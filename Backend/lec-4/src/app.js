@@ -22,8 +22,9 @@ app.get("/pages", (req, res) => {
 
 app.delete("/pages/:index", (req, res) => {
     delete pages[req.params.index];
-    // pages[req.params.index] = null;
     res.send("pages deleted successfully")
 })
+
+ 
     
 module.exports = app;
