@@ -9,7 +9,7 @@ const App = () => {
 
   const fetchNotes = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/notes");
+      const response = await axios.get("https://cohort-2-0-cswr.onrender.com//notes");
       setNotes(response.data.notes);
     } catch (error) {
       console.log("Error fetching notes:", error);
@@ -27,7 +27,7 @@ const App = () => {
       return;
     }
     try {
-      await axios.post("http://localhost:3000/notes", {
+      await axios.post("https://cohort-2-0-cswr.onrender.com//notes", {
         title,
         content
       });
@@ -41,7 +41,7 @@ const App = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/notes/${id}`);
+      await axios.delete(`https://cohort-2-0-cswr.onrender.com/notes/${id}`);
       fetchNotes();
     } catch (error) {
       console.log(error);
@@ -50,7 +50,7 @@ const App = () => {
 
   const handleUpdate = async (id) => {
     try {
-      await axios.patch(`http://localhost:3000/notes/${id}`, {
+      await axios.patch(`https://cohort-2-0-cswr.onrender.com/notes/${id}`, {
         title,
         content
       });
