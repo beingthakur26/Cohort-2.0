@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 async function dbConnect() {
   try {
     await mongoose.connect(
-      "mongodb://manas:jt8WgslvY1P0cgkl@ac-4mscc07-shard-00-00.lczyxx7.mongodb.net:27017,ac-4mscc07-shard-00-01.lczyxx7.mongodb.net:27017,ac-4mscc07-shard-00-02.lczyxx7.mongodb.net:27017/?replicaSet=atlas-ahhvr9-shard-0&ssl=true&authSource=admin"
+      "mongodb://manas:l0WenYkSywhQ84v9@ac-glvn5tg-shard-00-00.sppz2qu.mongodb.net:27017,ac-glvn5tg-shard-00-01.sppz2qu.mongodb.net:27017,ac-glvn5tg-shard-00-02.sppz2qu.mongodb.net:27017/day-6?replicaSet=atlas-hdkizj-shard-0&ssl=true&authSource=admin"
     );
     console.log("Database connected");
   } catch (err) {
