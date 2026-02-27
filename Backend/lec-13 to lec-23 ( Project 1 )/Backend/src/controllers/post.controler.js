@@ -4,6 +4,7 @@ const {toFile} = require('@imagekit/nodejs')
 const { Folders } = require('@imagekit/nodejs/resources/index.js')
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
+const identifyUser = require('../middlewares/auth.middleware')
 
 
 const imagekit = new ImageKit({
@@ -11,24 +12,6 @@ const imagekit = new ImageKit({
 })
 
 const createPost = async (req, res) => {
-
-    const token = req.cookies.token
-
-    if (!token) {
-        return res.status(401).send({
-            message: "Unauthorized - No token provided"
-        })
-    }
-
-    let decoded = null;
-
-    try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-        return res.status(401).send({
-            message: "Unauthorized - Invalid token"
-        });
-    }
 
     const file = await imagekit.files.upload({
         file: await toFile(Buffer.from(req.file.buffer), 'file'),
@@ -39,7 +22,7 @@ const createPost = async (req, res) => {
     const post = await PostModel.create({
         caption: req.body.caption,
         imgUrl: file.url,
-        userId: decoded.id
+        userId: req.user.id
     })
 
     res.status(201).json({
@@ -52,27 +35,8 @@ const createPost = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
 
-    const token = req.cookies.token
-
-    if (!token) {
-        return res.status(401).send({
-            message: "Unauthorized - No token provided"
-        })
-    }
-
-    let decoded = null;
-
-    try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET);
-    }
-    catch (error) {
-        return res.status(401).send({
-            message: "Unauthorized - Invalid token"
-        })
-    }
-
     const posts = await PostModel.find({
-        userId: decoded.id
+        userId: req.user.id
     })
 
     res.status(200).json({  
@@ -83,25 +47,7 @@ const getAllPosts = async (req, res) => {
 
 const getPostDetails = async (req, res) => {
 
-    const token = req.cookies.token
-
-    if (!token) {
-        return res.status(401).send({
-            message: "Unauthorized - No token provided"
-        })
-    }
-
-    let decoded = null;
-
-    try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-        return res.status(401).send({
-            message: "Unauthorized - Invalid token"
-        });
-    }
-
-    const userid = decoded.id
+    const userid = req.user.id
     const postId = req.params.postId
 
     const post = await PostModel.findById(postId)
