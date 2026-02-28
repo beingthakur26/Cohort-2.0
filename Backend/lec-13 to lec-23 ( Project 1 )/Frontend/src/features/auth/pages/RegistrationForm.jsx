@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./style/form.scss";
-import axios from "axios";
+import "../style/form.scss";
+import { useAuth } from "../hooks/useAuth";     
 
 const RegistrationForm = () => {
 
@@ -9,26 +9,18 @@ const RegistrationForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const { handleRegister } = useAuth();
+
   const handleFormSubmit = (e) => {
     e.preventDefault(); // stop page reload
-
-    // if (!username || !email || !password) {
-    //   alert("All fields are required");
-    //   return;
-    // }
-
-    axios.post("http://localhost:3000/api/auth/register", {
-      user: username,
-      email,
-      password
-    }, {
-        withCredentials: true // include cookies for session management
-    }).then((response) => {
-      console.log("Registration successful", response.data);
-    }).catch((error) => {
-      console.error("Registration failed", error);
-    });
-
+    handleRegister(username, email, password)
+      .then((res) => {
+        // Registration successful, you can redirect the user or show a success message
+        console.log("Registration successful", res);
+      })
+      .catch((error) => {
+        console.error("Registration failed:", error);
+      });
   };
 
   return (
