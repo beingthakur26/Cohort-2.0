@@ -12,26 +12,38 @@ const imagekit = new ImageKit({
 })
 
 const createPost = async (req, res) => {
+    try {
 
-    // Upload image to ImageKit (convert buffer to file first)
-    const file = await imagekit.files.upload({
-        file: await toFile(Buffer.from(req.file.buffer), 'file'),
-        fileName: req.file.originalname,
-        folder: "cohort-2-insta-posts"
-    })
+        if (!req.file) {
+            return res.status(400).json({
+                message: "Image file is required"
+            });
+        }
 
-    // Save post in DB with uploaded image URL
-    const post = await PostModel.create({
-        caption: req.body.caption,
-        imgUrl: file.url,     // store cloud image URL, not raw file
-        userId: req.user.id  // user injected by auth middleware
-    })
+        const file = await imagekit.files.upload({
+            file: await toFile(Buffer.from(req.file.buffer), 'file'),
+            fileName: req.file.originalname,
+            folder: "cohort-2-insta-posts"
+        });
 
-    res.status(201).json({
-        message: "Post created successfully",
-        post
-    })
-}
+        const post = await PostModel.create({
+            caption: req.body.caption,
+            imgUrl: file.url,
+            userId: req.user.id
+        });
+
+        res.status(201).json({
+            message: "Post created successfully",
+            post
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Something went wrong while creating post"
+        });
+    }
+};
 
 const getAllPosts = async (req, res) => {
 
@@ -148,6 +160,43 @@ const getFeedPosts = async (req, res) => {
     });
 };
 
+const unlikePost = async (req, res) => {
+
+    const username = req.user.username
+    const postId = req.params.postId
+
+    try {
+
+        // Check if like exists first
+        const like = await likeModel.findOne({
+            postId: postId,
+            userId: username
+        })
+
+        if (!like) {
+            return res.status(404).json({
+                message: "You have not liked this post"
+            })
+        }
+
+        // Delete the like record
+        await likeModel.deleteOne({
+            postId: postId,
+            userId: username
+        })
+
+        res.status(200).json({
+            message: "Post unliked successfully"
+        })
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({
+            message: "Internal server error"
+        })
+    }
+}
+
 
 
 module.exports = {
@@ -155,5 +204,6 @@ module.exports = {
     getAllPosts,
     getPostDetails,
     likePost,
-    getFeedPosts 
+    getFeedPosts,
+    unlikePost
 }

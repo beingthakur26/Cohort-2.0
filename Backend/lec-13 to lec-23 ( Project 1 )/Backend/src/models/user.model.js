@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema({
         // Must always store hashed password (never plain text)
     },
     bio: String,  // Optional user description
-
     profileImage: {
         type: String,
         default: 'https://ik.imagekit.io/hhb2cdv9pt/profileImage.jpg'

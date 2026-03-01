@@ -21,7 +21,7 @@ const LoginForm = () => {
       .then((res) => {
         // Login successful, you can redirect the user or show a success message
         console.log("Login successful", res);
-        navigate("/"); // Redirect to home page after successful login
+        navigate("/feed"); // Redirect to feed page after successful login
       })
       .catch((error) => {
         console.error("Login failed:", error);

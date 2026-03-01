@@ -17,8 +17,8 @@ const identifyUser = require('../middlewares/auth.middleware')
 */
 PostRouter.post(
     "/create",
-    upload.single("imgUrl"),  // Extract single file from form-data
     identifyUser,             // Attach logged-in user to req.user
+    upload.single("imgUrl"),  // Extract single file from form-data
     PostController.createPost
 )
 
@@ -61,6 +61,16 @@ PostRouter.get(
     "/feed",
     identifyUser,             // User must be logged in to view feed
     PostController.getFeedPosts
+)
+
+/*
+    DELETE /api/posts/unlike/:postId  [protected]
+    Removes like from a post
+*/
+PostRouter.delete(
+    "/unlike/:postId",
+    identifyUser,
+    PostController.unlikePost
 )
 
 module.exports = PostRouter

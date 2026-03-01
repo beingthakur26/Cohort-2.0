@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const postSchema = new mongoose.Schema({
     caption: {
         type: String,
-        default: ""  // Optional caption, empty string if not provided
+        default: "",  // Optional caption, empty string if not provided
+        maxlength: 2200
     },
     imgUrl: {
         type: String,

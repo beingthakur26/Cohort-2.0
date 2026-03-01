@@ -21,7 +21,7 @@ const RegistrationForm = () => {
     e.preventDefault(); // stop page reload
     await handleRegister(username, email, password)
       .then((res) => {
-        navigate("/");
+        navigate("/feed");
         // Registration successful, you can redirect the user or show a success message
         console.log("Registration successful", res);
       })

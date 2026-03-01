@@ -55,50 +55,125 @@ const registerController = async (req, res) => {
 
 const loginController = async (req, res) => {
 
-    const { user, email, password } = req.body
+    try {
 
-    // Find user using either username or email
-    const userExists = await userModel.findOne({ 
-        $or: [
-            { user: user }, 
-            { email: email }
-        ] 
-    }).select("+password")  // Include password for verification
+        const { user, email, password } = req.body
 
-    // If no matching user found
-    if (!userExists) {
-        return res.status(404).json({ 
-            message: "User not found" 
+        // 🔹 Basic validation (prevents bcrypt error if password is missing)
+        if (!password || (!user && !email)) {
+            return res.status(400).json({
+                message: "Please provide user/email and password"
+            })
+        }
+
+        // 🔹 Find user by username OR email
+        const userExists = await userModel.findOne({
+            $or: [
+                { user: user },
+                { email: email }
+            ]
+        }).select("+password") // include password because it's hidden in schema
+
+        if (!userExists) {
+            return res.status(404).json({
+                message: "User not found"
+            })
+        }
+
+        // 🔹 Compare entered password with hashed password
+        const isPasswordCorrect = await bcrypt.compare(password, userExists.password)
+
+        if (!isPasswordCorrect) {
+            return res.status(401).json({
+                message: "Invalid credentials"
+            })
+        }
+
+        // 🔹 Generate JWT token
+        const token = JWT.sign(
+            {
+                id: userExists._id,
+                username: userExists.user
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" } // token valid for 1 day
+        )
+
+        // 🔹 Store token inside cookie
+        // WHY added options?
+        // Because without them logout and CORS may not work properly
+        res.cookie("token", token, {
+            httpOnly: true,   // prevents JS from accessing token (security)
+            sameSite: "lax",  // allows frontend (5173) to talk to backend (3000)
+            secure: false     // must be false for localhost (true only in HTTPS)
         })
-    }   
 
-    // Compare entered password with hashed password in DB
-    const isPasswordCorrect = await bcrypt.compare(password, userExists.password)
-
-    // If password doesn't match
-    if (!isPasswordCorrect) {
-        return res.status(401).json({ 
-            message: "Invalid credentials" 
+        // 🔹 Send user details (without password)
+        res.status(200).json({
+            message: "User logged in successfully",
+            email: userExists.email,
+            user: userExists.user,
+            bio: userExists.bio,
+            profileImage: userExists.profileImage
         })
-    }    
 
-    // Generate new JWT token after successful login
-    const token = JWT.sign({ 
-        id: userExists._id,
-        username: userExists.user
-    }, process.env.JWT_SECRET, { expiresIn: '1d' })
+    } catch (error) {
 
-    res.cookie('token', token)       
+        // 🔹 Prevents server crash if something unexpected happens
+        console.error("Login error:", error)
 
-    // Send response without password field
-    res.status(200).json({ 
-        message: "User logged in successfully",
-        email : userExists.email, 
-        user : userExists.user,
-        bio : userExists.bio,
-        profileImage : userExists.profileImage
-    })
+        res.status(500).json({
+            message: "Something went wrong"
+        })
+    }
 }
+
+// const loginController = async (req, res) => {
+
+//     const { user, email, password } = req.body
+
+//     // Find user using either username or email
+//     const userExists = await userModel.findOne({ 
+//         $or: [
+//             { user: user }, 
+//             { email: email }
+//         ] 
+//     }).select("+password")  // Include password for verification
+
+//     // If no matching user found
+//     if (!userExists) {
+//         return res.status(404).json({ 
+//             message: "User not found" 
+//         })
+//     }   
+
+//     // Compare entered password with hashed password in DB
+//     const isPasswordCorrect = await bcrypt.compare(password, userExists.password)
+
+//     // If password doesn't match
+//     if (!isPasswordCorrect) {
+//         return res.status(401).json({ 
+//             message: "Invalid credentials" 
+//         })
+//     }    
+
+//     // Generate new JWT token after successful login
+//     const token = JWT.sign({ 
+//         id: userExists._id,
+//         username: userExists.user
+//     }, process.env.JWT_SECRET, { expiresIn: '1d' })
+
+//     res.cookie('token', token)       
+
+//     // Send response without password field
+//     res.status(200).json({ 
+//         message: "User logged in successfully",
+//         email : userExists.email, 
+//         user : userExists.user,
+//         bio : userExists.bio,
+//         profileImage : userExists.profileImage
+//     })
+// }
 
 const getMeController = async (req, res) => {
 
@@ -120,10 +195,30 @@ const getMeController = async (req, res) => {
     })
 }
 
+const logoutController = async (req, res) => {
+    try {
 
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: false,       // true in production (HTTPS)
+            sameSite: "lax"
+        });
+
+        return res.status(200).json({
+            message: "Logged out successfully"
+        });
+
+    } catch (error) {
+        console.error("Logout error:", error);
+        return res.status(500).json({
+            message: "Logout failed"
+        });
+    }
+};
 
 module.exports = {
     registerController,
     loginController,
-    getMeController
+    getMeController,
+    logoutController
 }

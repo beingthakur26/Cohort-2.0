@@ -14,5 +14,8 @@ authRouter.post("/login", authController.loginController)
 // Route for user get details (protected route)
 authRouter.get("/get-me", identifyUser, authController.getMeController)
 
+// Route for user logout
+authRouter.post("/logout", authController.logoutController);
+
 module.exports = authRouter
 // Export router to be mounted in main app (e.g., app.use("/auth", authRouter))
