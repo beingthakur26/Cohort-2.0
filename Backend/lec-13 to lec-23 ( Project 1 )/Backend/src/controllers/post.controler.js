@@ -76,9 +76,6 @@ const getPostDetails = async (req, res) => {
     })
 }
 
-// ==========================
-// LIKE POST
-// ==========================
 const likePost = async (req, res) => {
 
     const username = req.user.username
@@ -122,9 +119,41 @@ const likePost = async (req, res) => {
     }
 }
 
+const getFeedPosts = async (req, res) => {
+
+    const user = req.user   // keep full user object
+
+    const feedPosts = await Promise.all(
+        (await PostModel
+            .find()
+            .populate("userId")
+            .lean()
+        )
+        .map(async (post) => {
+
+            const isLiked = await likeModel.findOne({
+                postId: post._id,
+                userId: user.username   // since you're storing username
+            })
+
+            post.isLiked = Boolean(isLiked)  // convert to true/false
+
+            return post;
+        })
+    )
+
+    res.status(200).json({
+        message: "posts fetched successfully.",
+        posts: feedPosts
+    });
+};
+
+
+
 module.exports = {
     createPost,
     getAllPosts,
     getPostDetails,
-    likePost
+    likePost,
+    getFeedPosts 
 }

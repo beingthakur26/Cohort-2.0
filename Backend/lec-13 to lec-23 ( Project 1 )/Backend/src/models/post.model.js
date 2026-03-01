@@ -11,7 +11,7 @@ const postSchema = new mongoose.Schema({
         // Stores cloud image URL (not file itself)
     },
     userId: {
-        ref: "User",  // Reference to User collection (for population)
+        ref: "users",  // Reference to User collection (for population)
         type: mongoose.Schema.Types.ObjectId,
         required: [true, "User ID is required"]  
         // Links post to its creator using stable ObjectId

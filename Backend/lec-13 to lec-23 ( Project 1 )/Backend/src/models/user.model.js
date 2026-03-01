@@ -15,7 +15,8 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'Password is required']
+        required: [true, 'Password is required'],
+        select: false  // Exclude password from query results by default
         // Must always store hashed password (never plain text)
     },
     bio: String,  // Optional user description

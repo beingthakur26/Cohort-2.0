@@ -63,7 +63,7 @@ const loginController = async (req, res) => {
             { user: user }, 
             { email: email }
         ] 
-    })
+    }).select("+password")  // Include password for verification
 
     // If no matching user found
     if (!userExists) {

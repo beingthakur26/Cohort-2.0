@@ -52,4 +52,15 @@ PostRouter.post(
     PostController.likePost
 )
 
+
+/*
+    GET /api/posts/feed  [protected]
+    Returns posts from followed users (feed)
+*/
+PostRouter.get(
+    "/feed",
+    identifyUser,             // User must be logged in to view feed
+    PostController.getFeedPosts
+)
+
 module.exports = PostRouter

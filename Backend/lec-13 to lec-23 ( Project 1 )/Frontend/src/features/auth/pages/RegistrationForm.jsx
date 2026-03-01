@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../style/form.scss";
 import { useAuth } from "../hooks/useAuth";     
 
@@ -9,12 +9,19 @@ const RegistrationForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { handleRegister } = useAuth();
+  const { handleRegister, loading } = useAuth();
 
-  const handleFormSubmit = (e) => {
+  const navigate = useNavigate();
+
+  if(loading) {
+    return <div>Loading...</div>;
+  }
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault(); // stop page reload
-    handleRegister(username, email, password)
+    await handleRegister(username, email, password)
       .then((res) => {
+        navigate("/");
         // Registration successful, you can redirect the user or show a success message
         console.log("Registration successful", res);
       })
