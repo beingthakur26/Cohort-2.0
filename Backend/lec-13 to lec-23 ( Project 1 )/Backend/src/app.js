@@ -11,18 +11,18 @@ app.use(express.json())
 app.use(cookies())
 
 // Enable CORS for all routes (allows frontend to communicate with backend)
-
-// app.use(cors({
-//   origin: "http://localhost:5173",
-//   credentials: true
-// }));
 app.use(cors({
   origin: [
-    "http://localhost:5173",  // local frontend
-    // "https://your-frontend-domain.com" // replace later when deployed
+    "http://localhost:5173",
+    "https://insta-clone-frontend-ov60.onrender.com"
   ],
-  credentials: true
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+// Important for preflight
+app.options("*", cors());
 
 /* requiring routes */
 const authRouter = require('./routes/auth.route')
