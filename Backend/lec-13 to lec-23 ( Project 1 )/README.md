@@ -157,3 +157,4 @@ Runs on http://localhost:5173
 ✅ Responsive UI
 
 Fully functional full-stack Instagram clone.
+"# Insta-clone" 
