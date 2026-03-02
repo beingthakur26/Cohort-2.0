@@ -4,34 +4,30 @@ const cors = require('cors')
 
 const app = express()
 
-// Parse incoming JSON body (req.body)
-app.use(express.json())
-
-// Parse cookies from incoming requests (needed for JWT in cookies)
-app.use(cookies())
-
-// Enable CORS for all routes (allows frontend to communicate with backend)
+// 🔥 CORS MUST COME FIRST
+console.log("CORS CONFIG LOADED")
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://insta-clone-frontend-ov60.onrender.com"
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+  origin: true,
+  credentials: true
+}))
 
-// Important for preflight
-app.options("*", cors());
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
+// THEN middlewares
+app.use(express.json())
+app.use(cookies())
 
 /* requiring routes */
 const authRouter = require('./routes/auth.route')
 const postRouter = require('./routes/post.route')
 const userRouter = require('./routes/user.route')
 
-/* mounting routes with base paths */
-app.use('/api/auth', authRouter)   // Authentication routes
-app.use('/api/posts', postRouter)  // Post-related routes
-app.use('/api/users', userRouter)  // User & follow-related routes
+/* mounting routes */
+app.use('/api/auth', authRouter)
+app.use('/api/posts', postRouter)
+app.use('/api/users', userRouter)
 
 module.exports = app
