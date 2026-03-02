@@ -1,114 +1,50 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import React, { useEffect, useState } from "react";
-import "../profile.scss";
-import api from "../../../utils/api";
+import "../style/profile.scss";
+import { useUser } from "../hook/useUser";
 
 const Profile = () => {
 
-  const [userData, setUserData] = useState(null);
-  const [requests, setRequests] = useState([]);
-  const [following, setFollowing] = useState([]);
-  const [suggested, setSuggested] = useState([]);
-  const [editMode, setEditMode] = useState(false);
+  const {
+    userData,
+    requests,
+    following,
+    suggested,
+    fetchAll,
+    handleAction,
+    handleUpdateProfile,
+  } = useUser();
 
+  const [editMode, setEditMode] = useState(false);
   const [newUsername, setNewUsername] = useState("");
   const [newBio, setNewBio] = useState("");
   const [newImage, setNewImage] = useState(null);
-
-  const fetchAll = async () => {
-    const profile = await api.get(
-      "/auth/get-me",
-      { withCredentials: true }
-    );
-
-    setUserData(profile.data);
-    setNewUsername(profile.data.user);
-    setNewBio(profile.data.bio || "");
-
-    const reqRes = await api.get(
-      "/users/requests",
-      { withCredentials: true }
-    );
-
-    setRequests(reqRes.data.requests);
-
-    const followingRes = await api.get(
-      "/users/following",
-      { withCredentials: true }
-    );
-
-    setFollowing(followingRes.data.following);
-
-    const suggestedRes = await api.get(
-      "/users/suggested",
-      { withCredentials: true }
-    );
-
-    setSuggested(suggestedRes.data.users);
-  };
 
   useEffect(() => {
     fetchAll();
   }, []);
 
-  const handleAction = async (type, username) => {
-
-    if (type === "accept") {
-      await api.patch(
-        `/users/follow/status/${username}`,
-        { status: "accepted" },
-        { withCredentials: true }
-      );
+  useEffect(() => {
+    if (userData) {
+      setNewUsername(userData.user);
+      setNewBio(userData.bio || "");
     }
+  }, [userData]);
 
-    if (type === "reject") {
-      await api.patch(
-        `/users/follow/status/${username}`,
-        { status: "rejected" },
-        { withCredentials: true }
-      );
-    }
-
-    if (type === "unfollow") {
-      await api.post(
-        `/users/unfollow/${username}`,
-        {},
-        { withCredentials: true }
-      );
-    }
-
-    if (type === "follow") {
-      await api.post(
-        `/users/follow/${username}`,
-        {},
-        { withCredentials: true }
-      );
-    }
-
-    fetchAll();
-  };
-
-  const handleUpdateProfile = async () => {
+  const handleSave = async () => {
     const formData = new FormData();
     formData.append("user", newUsername);
     formData.append("bio", newBio);
     if (newImage) formData.append("profileImage", newImage);
 
-    await api.patch(
-      "/users/update-profile",
-      formData,
-      { withCredentials: true }
-    );
-
+    await handleUpdateProfile(formData);
     setEditMode(false);
-    fetchAll();
   };
 
   if (!userData) return <div className="profile-loading">Loading...</div>;
 
   return (
     <div className="profile-container">
-
       <div className="profile-grid">
 
         {/* LEFT SIDE */}
@@ -116,7 +52,7 @@ const Profile = () => {
 
           <div className="profile-image-wrapper">
             <img
-              src={userData.profileImage}
+              src={userData.profileImage || "https://via.placeholder.com/150"}
               alt="profile"
               className="profile-image"
             />
@@ -136,7 +72,7 @@ const Profile = () => {
                 type="file"
                 onChange={(e) => setNewImage(e.target.files[0])}
               />
-              <button onClick={handleUpdateProfile}>
+              <button onClick={handleSave}>
                 Save Changes
               </button>
             </>
@@ -149,7 +85,6 @@ const Profile = () => {
               </button>
             </>
           )}
-
         </div>
 
         {/* RIGHT SIDE */}
@@ -198,7 +133,6 @@ const Profile = () => {
         </div>
 
       </div>
-
     </div>
   );
 };

@@ -1,42 +1,18 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import "../nav.scss";
-import api from "../../../utils/api";
+import "./nav.scss";
+import { useAuth } from "../../auth/hooks/useAuth";
 
 const Nav = () => {
-
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user, handleLogout } = useAuth();
 
-  // 🔹 Check login status when Nav loads
-  const checkAuth = async () => {
+  const isLoggedIn = Boolean(user);
+
+  const logoutAndRedirect = async () => {
     try {
-      await api.get(
-        "/auth/get-me",
-        { withCredentials: true }
-      );
-      setIsLoggedIn(true);  // token valid
-    } catch {
-      setIsLoggedIn(false); // 401 means not logged in
-    }
-  };
-
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await api.post(
-        "/auth/logout",
-        {},
-        { withCredentials: true }
-      );
-
-      setIsLoggedIn(false); // update UI immediately
+      await handleLogout();
       navigate("/");
-
     } catch (error) {
       console.error("Logout failed:", error.response?.data || error.message);
     }
@@ -45,12 +21,14 @@ const Nav = () => {
   return (
     <nav className="navbar">
 
+      {/* LEFT */}
       <div className="nav-left">
         <h2 className="logo" onClick={() => navigate("/feed")}>
           InstaClone
         </h2>
       </div>
 
+      {/* CENTER */}
       <div className="nav-center">
         {isLoggedIn && (
           <>
@@ -69,17 +47,25 @@ const Nav = () => {
         )}
       </div>
 
+      {/* RIGHT */}
       <div className="nav-right">
         {isLoggedIn ? (
-          <button onClick={handleLogout} className="logout-btn">
+          <button onClick={logoutAndRedirect} className="logout-btn">
             Logout
           </button>
         ) : (
           <>
-            <button onClick={() => navigate("/")} className="logout-btn">
+            <button
+              onClick={() => navigate("/")}
+              className="logout-btn"
+            >
               Login
             </button>
-            <button onClick={() => navigate("/register")} className="logout-btn">
+
+            <button
+              onClick={() => navigate("/register")}
+              className="logout-btn"
+            >
               Signup
             </button>
           </>

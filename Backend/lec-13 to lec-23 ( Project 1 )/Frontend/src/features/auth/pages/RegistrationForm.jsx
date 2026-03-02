@@ -18,16 +18,14 @@ const RegistrationForm = () => {
   }
 
   const handleFormSubmit = async (e) => {
-    e.preventDefault(); // stop page reload
-    await handleRegister(username, email, password)
-      .then((res) => {
-        navigate("/feed");
-        // Registration successful, you can redirect the user or show a success message
-        console.log("Registration successful", res);
-      })
-      .catch((error) => {
-        console.error("Registration failed:", error);
-      });
+    e.preventDefault();
+
+    try {
+      await handleRegister(username, email, password);
+      navigate("/feed");
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
   };
 
   return (
