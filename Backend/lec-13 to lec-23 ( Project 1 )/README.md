@@ -1,100 +1,71 @@
-# 📸 Cohort 2.0 -- Instagram Clone Backend API
+# 📸 Insta-Clone (Full Stack Social Media App)
 
-A structured RESTful backend built using **Node.js, Express, MongoDB,
-JWT Authentication, and ImageKit**.
-
-This backend handles: - User Authentication - Post Creation &
-Retrieval - Like System - Follow System - Cloud Image Upload
+A fully functional Instagram-inspired social media application built
+using **MERN Stack (MongoDB, Express, React, Node.js)** with
+authentication, post creation, like system, follow system, and profile
+management.
 
 ------------------------------------------------------------------------
 
 ## 🚀 Tech Stack
 
+### Frontend
+
+-   React (Hooks + Functional Components)
+-   Vite
+-   React Router DOM
+-   Axios
+-   SCSS
+-   Context API
+-   Cookie-based JWT Authentication
+
+### Backend
+
 -   Node.js
 -   Express.js
 -   MongoDB + Mongoose
--   JWT (Cookie-Based Authentication)
--   bcryptjs (Password Hashing)
--   Multer (File Upload Handling)
--   ImageKit (Cloud Storage)
+-   JWT Authentication
+-   bcryptjs
+-   Multer
+-   ImageKit Cloud Storage
 
 ------------------------------------------------------------------------
 
-## 📂 Project Structure
+## 🔐 Features
 
-    src/
-    │
-    ├── config/
-    │   └── database.js
-    │
-    ├── controllers/
-    │   ├── auth.controller.js
-    │   ├── post.controller.js
-    │   └── user.controller.js
-    │
-    ├── middlewares/
-    │   └── auth.middleware.js
-    │
-    ├── models/
-    │   ├── user.model.js
-    │   ├── post.model.js
-    │   ├── like.model.js
-    │   └── follow.model.js
-    │
-    ├── routes/
-    │   ├── auth.route.js
-    │   ├── post.route.js
-    │   └── user.route.js
-    │
-    └── app.js
+### Authentication
 
-    server.js
+-   Register user
+-   Login user
+-   Logout
+-   JWT stored in HTTP-only cookies
+-   Protected routes
 
-------------------------------------------------------------------------
+### Posts
 
-## 🔐 Authentication
+-   Create post with image upload
+-   Caption support
+-   Feed system
+-   Like / Unlike functionality
+-   View post details
 
--   JWT-based authentication
--   Token stored in HTTP-only cookies
--   Middleware verifies token for protected routes
--   Passwords securely hashed using bcrypt
+### Follow System
 
-------------------------------------------------------------------------
+-   Follow user
+-   Unfollow user
+-   Accept follow request
+-   Reject follow request
+-   Suggested users
+-   View following list
+-   Follow request management
 
-## 📌 API Endpoints
+### Profile Management
 
-### 🔑 Auth Routes
-
-  Method   Endpoint               Description
-  -------- ---------------------- -------------------
-  POST     `/api/auth/register`   Register new user
-  POST     `/api/auth/login`      Login user
-
-------------------------------------------------------------------------
-
-### 📝 Post Routes (Protected)
-
-  Method   Endpoint                       Description
-  -------- ------------------------------ ----------------------------------
-  POST     `/api/posts/create`            Create a new post (image upload)
-  GET      `/api/posts`                   Get all posts of logged-in user
-  GET      `/api/posts/details/:postId`   Get detailed post info
-  POST     `/api/posts/like/:postId`      Like a post
-
-------------------------------------------------------------------------
-
-### 👥 User Routes (Protected)
-
-  --------------------------------------------------------------------------------------
-  Method             Endpoint                               Description
-  ------------------ -------------------------------------- ----------------------------
-  POST               `/api/users/follow/:username`          Follow a user
-
-  POST               `/api/users/unfollow/:username`        Unfollow a user
-
-  PATCH              `/api/users/follow/status/:username`   Accept or reject follow
-                                                            request
-  --------------------------------------------------------------------------------------
+-   View profile
+-   Edit username
+-   Edit bio
+-   Update profile image
+-   Manage follow requests from profile
 
 ------------------------------------------------------------------------
 
@@ -112,55 +83,77 @@ Retrieval - Like System - Follow System - Cloud Image Upload
 
 -   caption
 -   imgUrl
--   userId (ObjectId reference)
+-   userId
 -   timestamps
 
 ### Like
 
--   postId (ObjectId reference)
+-   postId
 -   userId
--   unique compound index (postId + userId)
+-   unique compound index
 
 ### Follow
 
 -   followers
 -   following
 -   status (pending, accepted, rejected)
--   unique compound index
 
 ------------------------------------------------------------------------
 
-## ⚙️ Environment Variables
+## 🌐 API Endpoints
 
-Create a `.env` file in the root directory:
+### Auth
 
-    PORT=3000
-    MONGO_URI=your_mongodb_connection_string
-    JWT_SECRET=your_secret_key
-    IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
+-   POST /api/auth/register
+-   POST /api/auth/login
+-   GET /api/auth/get-me
+-   POST /api/auth/logout
+
+### Posts
+
+-   POST /api/posts/create
+-   GET /api/posts
+-   GET /api/posts/feed
+-   GET /api/posts/details/:postId
+-   POST /api/posts/like/:postId
+-   DELETE /api/posts/unlike/:postId
+
+### Users
+
+-   POST /api/users/follow/:username
+-   POST /api/users/unfollow/:username
+-   PATCH /api/users/follow/status/:username
+-   GET /api/users/suggested
+-   GET /api/users/requests
+-   GET /api/users/following
+-   PATCH /api/users/update-profile
 
 ------------------------------------------------------------------------
 
-## 🏁 Run Locally
+## ▶️ Run Locally
 
-Install dependencies:
+### Backend
 
-    npm install
+cd Backend npm install npm run dev
 
-Start server:
+Runs on http://localhost:3000
 
-    npm run dev
+### Frontend
 
-or
+cd Frontend npm install npm run dev
 
-    node server.js
-
-Server runs at:
-
-    http://localhost:3000
+Runs on http://localhost:5173
 
 ------------------------------------------------------------------------
 
 ## 📌 Status
 
-Backend complete and ready for frontend integration.
+✅ Authentication\
+✅ Post Creation\
+✅ Like System\
+✅ Follow System\
+✅ Profile Management\
+✅ Cloud Image Upload\
+✅ Responsive UI
+
+Fully functional full-stack Instagram clone.
