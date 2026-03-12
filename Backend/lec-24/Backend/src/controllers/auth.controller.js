@@ -1,68 +1,131 @@
-const userModel = require('../models/user.model')
+const userModel = require("../models/user.model");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const blacklistModel = require("../models/blacklist.model")
+// const redis = require("../config/cache")
 
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+const registerUser = async (req, res)  => {
+    const { username, email, password } = req.body;
 
-const registerController = async (req, res) => {
-    try {
-        const { username, email, password } = req.body
+    const isAlreadyRegistered = await userModel.findOne({
+        $or: [
+            { email },
+            { username }
+        ]
+    })
 
-        if (!username || !email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: "All fields are required"
-            })
-        }
-        
-        const existingUser = await userModel.findOne({
-            $or: [{ username }, { email }]
-        })
-
-        if (existingUser) {
-            return res.status(400).json({
-                success: false,
-                message: "User already exists with this email or username"
-            })
-        }
-
-        const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(password, salt)
-
-        const newUser = await userModel.create({
-            username,
-            email,
-            password: hashedPassword
-        })
-
-        const token = jwt.sign(
-            { id: newUser._id },
-            process.env.JWT_SECRET || 'secret',
-            { expiresIn: '1d' }
-        )
-
-        return res.status(201).json({
-            success: true,
-            message: "User registered successfully",
-            user: {
-                id: newUser._id,
-                username: newUser.username,
-                email: newUser.email
-            },
-            token
-        })
-
-    } catch (error) {
-        console.error(error)
-        return res.status(500).json({
-            success: false,
-            message: "Error registering user",
-            error: error.message
+    if (isAlreadyRegistered) {
+        return res.status(400).json({
+            message: "User with the same email or username already exists"
         })
     }
+
+    const hash = await bcrypt.hash(password, 10);
+
+    const user = await userModel.create({
+        username,
+        email,
+        password: hash
+    })
+
+    const token = jwt.sign(
+        {
+            id: user._id,
+            username: user.username
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: "3d"
+        }
+    )
+
+    res.cookie("token", token)
+
+    return res.status(201).json({
+        message: "User registered successfully",
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email
+        }
+    })
+
 }
 
+const loginUser = async (req, res) => {
+    const { email, password, username } = req.body;
+
+    const user = await userModel.findOne({
+        $or: [
+            { email },
+            { username }
+        ]
+    }).select("+password")
+
+    if (!user) {
+        return res.status(400).json({
+            message: "Invalid credentials"
+        })
+    }
 
 
-module.exports = {
-    registerController
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+        return res.status(400).json({
+            message: "Invalid credentials"
+        })
+    }
+
+    const token = jwt.sign(
+        {
+            id: user._id,
+            username: user.username
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: "3d"
+        }
+    )
+
+    res.cookie("token", token)
+
+    return res.status(200).json({
+        message: "User logged in successfully",
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email
+        }
+    })
+}
+
+// const getMe = async (req, res) => {
+//     const user = await userModel.findById(req.user.id)
+
+//     res.status(200).json({
+//         message: "User fetched successfully",
+//         user
+//     })
+// }
+
+// const logoutUser = async (req, res) => {
+
+//     const token = req.cookies.token
+
+//     res.clearCookie("token")
+
+//     await redis.set(token, Date.now().toString(), "EX", 60 * 60)
+
+//     res.status(200).json({
+//         message: "logout successfully."
+//     })
+// }
+
+
+module.exports = { 
+    registerUser, 
+    loginUser, 
+    // getMe, 
+    // logoutUser 
 }
