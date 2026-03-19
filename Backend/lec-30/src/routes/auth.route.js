@@ -1,8 +1,13 @@
+import { authRegister} from "../controllers/auth.controller.js";
 import { Router } from "express";
-import { authRegister } from "../controllers/auth.controller.js";
+import { registerValidation } from "../validation/auth.validator.js";
 
 const authRouter = Router()
 
-authRouter.post("/register", authRegister)
+/**
+ * /api/auth/register
+ */
+authRouter.post("/register", registerValidation, authRegister)
+
 
 export default authRouter
