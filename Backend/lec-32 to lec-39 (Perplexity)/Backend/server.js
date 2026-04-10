@@ -7,6 +7,9 @@ dotenv.config();
 
 dns.setServers(['8.8.8.8', '1.1.1.1']);
 
+/**
+ * @description Connect to MongoDB and start the server
+ */
 connectDB()
     .then(() => {
         app.listen(process.env.PORT || 3000, () => {

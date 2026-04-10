@@ -13,10 +13,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
 // Registering simple routes
+/**
+ * @description This middleware is used to register all the routes
+ * @description All the routes are registered under the /api/auth path
+ */
 app.use("/api/auth", userRouter);
 
+
 // Handling 404 for unknown routes
+/**
+ * @description This middleware is called when no route is found for the given request
+ */
 app.use((req, res, next) => {
     next(new ApiError(404, `Route ${req.originalUrl} not found`));
 });
