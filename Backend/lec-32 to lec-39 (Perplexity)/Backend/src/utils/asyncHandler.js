@@ -5,10 +5,14 @@
  * @returns {Function} - A function that catches errors and passes them to the next middleware.
  */
 const asyncHandler = (requestHandler) => {
-    return (req, res, next) => {
-        Promise.resolve(requestHandler(req, res, next))
-            .catch((err) => next(err));
+    return async (req, res, next) => {
+        try {
+            await requestHandler(req, res, next);
+        } catch (error) {
+            next(error);
+        }
     };
 };
 
 export { asyncHandler };
+

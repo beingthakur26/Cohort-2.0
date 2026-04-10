@@ -10,14 +10,15 @@ const router = Router();
  * @route POST /api/auth/register
  * @access public
  */
-router.route("/register").post(registerValidator, validate, registerUser);
+router.post("/register", registerValidator, validate, registerUser);
 
 /**
  * @description Login a user
  * @route POST /api/auth/login
  * @access public
  */
-router.route("/login").post(loginValidator, validate, loginUser);
+router.post("/login", loginValidator, validate, loginUser);
 
 export default router;
+
 
