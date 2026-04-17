@@ -38,11 +38,11 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hash password before saving
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
+// ✅ No `next` parameter — Mongoose 7+ async hooks resolve via the returned Promise
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return; // Skip hashing if password wasn't changed
 
     this.password = await bcrypt.hash(this.password, 10);
-    next;
 });
 
 // Custom method to check password
