@@ -341,3 +341,7 @@ const resendVerificationEmail = asyncHandler(async (req, res) => {
 });
 
 export { registerUser, loginUser, verifyEmail, getMe, logoutUser, forgotPassword, resetPassword, resendVerificationEmail };
+
+
+
+
