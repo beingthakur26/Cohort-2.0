@@ -1,1 +1,210 @@
 @import "tailwindcss";
+
+@theme {
+  /* Tailwind v4 Brand Colors */
+  --color-brand-950: #051F20;
+  --color-brand-900: #0B2B26;
+  --color-brand-800: #163832;
+  --color-brand-700: #235347;
+  --color-brand-300: #8EB69B;
+  --color-brand-100: #DAF1DE;
+
+  /* Aliases for convenience */
+  --color-bg-deep: var(--color-brand-950);
+  --color-bg-base: var(--color-brand-900);
+  --color-bg-card: var(--color-brand-800);
+  --color-bg-input: var(--color-brand-700);
+  --color-text-muted: var(--color-brand-300);
+  --color-text-bright: var(--color-brand-100);
+}
+
+:root {
+  /* Structural Variables (Depth-based) */
+  --bg-depth-0: #051F20; /* Deepest background */
+  --bg-depth-1: #0B2B26; /* Sidebar / Base surface */
+  --bg-depth-2: #163832; /* Card / Secondary surface */
+  --bg-depth-3: #235347; /* Input / Hover states */
+  
+  --text-muted: #8EB69B; /* Secondary/Dimmed text */
+  --text-bright: #DAF1DE; /* Primary/Highlight text */
+
+  /* Semantic Mapping */
+  --background: var(--bg-depth-0);
+  --foreground: var(--text-bright);
+  --accent: var(--bg-depth-3);
+  --border: var(--bg-depth-2);
+}
+
+/* Base resets and global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Optional: Scrollbar styling to match the theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-depth-0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-depth-2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-depth-3);
+}
+
+/* Shared Form Utilities */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.auth-card {
+  background-color: var(--bg-depth-1);
+  border: 1px solid var(--bg-depth-2);
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.auth-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.auth-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.input-field {
+  width: 100%;
+  background-color: var(--bg-depth-0);
+  border: 1px solid var(--bg-depth-2);
+  color: var(--text-bright);
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: var(--text-muted);
+  box-shadow: 0 0 0 2px rgba(142, 182, 155, 0.2);
+}
+
+.input-field.with-eye {
+  padding-right: 3rem;
+}
+
+.eye-button {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.eye-button:hover {
+  color: var(--text-bright);
+}
+
+.auth-button {
+  width: 100%;
+  background-color: var(--text-muted);
+  color: var(--bg-depth-0);
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+}
+
+.auth-button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.auth-button:active {
+  transform: translateY(0);
+}
+
+.auth-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.auth-link {
+  color: var(--text-bright);
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 0.25rem;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
