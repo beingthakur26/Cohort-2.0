@@ -1,10 +1,10 @@
-// eslint-disable-next-line no-unused-vars
-import React from 'react'
+import { RouterProvider } from "react-router"
+import { appRouter } from "./app.routes"
 
 const App = () => {
   return (
     <>
-      
+      <RouterProvider router={appRouter} />
     </>
   )
 }
