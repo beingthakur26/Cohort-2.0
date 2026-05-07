@@ -7,14 +7,14 @@ const model = new ChatGoogle({
     model: "gemini-2.5-flash",
 });
 
-export const getAiResponse = async () => {
-    const response = await model.invoke("hello, who are you?")
-        .then((res) => {
-            console.log(res.text);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+export const getAiResponse = async (prompt) => {
+    try {
+        const response = await model.invoke(prompt);
+        return response.content;
+    } catch (err) {
+        console.error("Error generating AI response:", err);
+        throw err;
+    }
 };
 
 

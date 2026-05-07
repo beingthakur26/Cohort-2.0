@@ -95,7 +95,8 @@ const registerUser = asyncHandler(async (req, res) => {
         fullName,
         email,
         username,
-        password
+        password,
+        emailVerified: false // Explicitly false initially
     });
 
     if (!user) {
@@ -105,6 +106,12 @@ const registerUser = asyncHandler(async (req, res) => {
     // Generate verify token
     const verifyToken = user.generateToken();
     const verificationUrl = `${req.protocol}://${req.get("host")}/api/auth/verify-email?token=${verifyToken}`;
+
+    // 🔗 DEV LOG: Print link to terminal so user can verify without email working
+    console.log("\n--------------------------------------------------");
+    console.log("🔗 DEV VERIFICATION LINK (Copy to browser):");
+    console.log(verificationUrl);
+    console.log("--------------------------------------------------\n");
 
     // ✅ Send email (DON'T BREAK FLOW)
     sendEmail({
@@ -118,11 +125,11 @@ const registerUser = asyncHandler(async (req, res) => {
         <p>Or copy and paste this link in your browser: <br> ${verificationUrl}</p>
         `
     }).catch(err => {
-        console.error("Email failed:", err.message);
+        console.error("❌ Email failed to send:", err.message);
     });
 
     // ✅ Send token (better UX)
-    sendTokenResponse(user, 201, res, "User registered successfully!");
+    sendTokenResponse(user, 201, res, "User registered successfully! Please check your email (or terminal) to verify your account.");
 });
 
 /**
@@ -146,7 +153,7 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(401, "Invalid email or password");
     }
 
-    // 4. PREVENT LOGIN IF EMAIL IS NOT VERIFIED (New feature added here)
+    // 4. PREVENT LOGIN IF EMAIL IS NOT VERIFIED
     if (!user.emailVerified) {
         throw new ApiError(403, "Please verify your email before logging in. Check your inbox for the verification link.");
     }

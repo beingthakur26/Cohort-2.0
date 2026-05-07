@@ -2,13 +2,13 @@ import dotenv from "dotenv";
 import dns from 'node:dns';
 import app from "./src/app.js";
 import connectDB from "./src/config/database.js";
-import { getAiResponse } from "./src/services/ai.services.js";
+// import { getAiResponse } from "./src/services/ai.services.js";
 
 dotenv.config();
 
 dns.setServers(['8.8.8.8', '1.1.1.1']);
 
-getAiResponse();
+// getAiResponse("hello")
 
 /**
  * @description Connect to MongoDB and start the server

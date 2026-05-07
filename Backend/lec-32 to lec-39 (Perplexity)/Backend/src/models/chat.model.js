@@ -7,11 +7,20 @@ const chatSchema = new mongoose.Schema(
             ref: "User",
             required: true
         },
-        title: {
-            type: String,
-            required: [true, "Chat title is required"],
-            trim: true
-        }
+        messages: [
+            {
+                role: {
+                    type: String,
+                    enum: ["user", "model"],
+                    required: true
+                },
+                parts: [
+                    {
+                        text: String
+                    }
+                ]
+            }
+        ]
     },
     {
         timestamps: true
