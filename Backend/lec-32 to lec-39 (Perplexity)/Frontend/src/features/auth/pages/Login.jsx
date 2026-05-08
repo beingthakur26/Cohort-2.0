@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router'
-import { useAuth } from '../hook/useAuth'
+import { useState, useEffect } from 'react'
+import { Link, Navigate, useNavigate } from 'react-router'
 import { useSelector, useDispatch } from 'react-redux'
-import { Navigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2, Sparkles } from 'lucide-react'
+import { useAuth } from '../hook/useAuth'
 import { setError } from '../auth.slice'
 
 const Login = () => {
-    const [ email, setEmail ] = useState('')
-    const [ password, setPassword ] = useState('')
-    const [ showPassword, setShowPassword ] = useState(false)
-    const [ successMsg, setSuccessMsg ] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
+    const [successMsg, setSuccessMsg] = useState('')
 
     const user = useSelector(state => state.auth.user)
     const loading = useSelector(state => state.auth.loading)
     const error = useSelector(state => state.auth.error)
-    
+
     const dispatch = useDispatch()
     const { handleLogin } = useAuth()
     const navigate = useNavigate()
@@ -34,28 +33,45 @@ const Login = () => {
         const result = await handleLogin({ email, password })
         if (result.success) {
             setSuccessMsg(result.message)
-            setTimeout(() => navigate("/"), 1500)
+            setTimeout(() => navigate('/'), 1500)
         }
     }
 
-    if(!loading && user){
+    if (!loading && user) {
         return <Navigate to="/" replace />
     }
 
     return (
         <div className="auth-container">
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
+            <aside className="auth-panel" aria-hidden="true">
+                <div className="auth-brand-mark">
+                    <Sparkles size={22} />
+                </div>
+                <p className="auth-kicker">Workspace access</p>
+                <h2 className="auth-panel-title">Pick up where your research left off.</h2>
+                <p className="auth-panel-copy">
+                    Sign in to return to saved threads, sources, and answers without losing context.
+                </p>
+                <div className="auth-panel-list">
+                    <span>Fast source recall</span>
+                    <span>Private account space</span>
+                    <span>Cleaner study flow</span>
+                </div>
+            </aside>
+
+            <motion.div
+                initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
                 className="auth-card"
             >
                 <div className="auth-header">
                     <h1 className="auth-title">Welcome back</h1>
-                    <p className="auth-subtitle">Sign in to continue</p>
+                    <p className="auth-subtitle">Sign in to continue your workspace.</p>
                 </div>
 
-                <button className="auth-button" style={{ backgroundColor: 'transparent', border: '1px solid var(--bg-depth-2)', color: 'var(--text-bright)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginTop: 0 }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <button type="button" className="auth-button auth-button-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
                         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05" />
@@ -64,28 +80,28 @@ const Login = () => {
                     Continue with Google
                 </button>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1.5rem 0' }}>
-                    <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--bg-depth-2)' }}></div>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>or</span>
-                    <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--bg-depth-2)' }}></div>
+                <div className="auth-divider">
+                    <span>or use email</span>
                 </div>
 
                 <AnimatePresence>
                     {error && (
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
-                            style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '0.75rem', borderRadius: '0.75rem', color: '#f87171', fontSize: '0.875rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="auth-alert auth-alert-error"
                         >
                             <AlertCircle size={16} />
                             {error}
                         </motion.div>
                     )}
                     {successMsg && (
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
-                            style={{ backgroundColor: 'rgba(142, 182, 155, 0.1)', border: '1px solid rgba(142, 182, 155, 0.2)', padding: '0.75rem', borderRadius: '0.75rem', color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="auth-alert auth-alert-success"
                         >
                             <CheckCircle2 size={16} />
                             {successMsg}
@@ -95,39 +111,44 @@ const Login = () => {
 
                 <form onSubmit={submitForm}>
                     <div className="form-group">
-                        <label className="form-label">Email</label>
+                        <label className="form-label" htmlFor="login-email">Email</label>
                         <div className="input-container">
                             <Mail className="input-icon" size={18} />
                             <input
+                                id="login-email"
                                 type="email"
                                 className="input-field"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="you@email.com"
+                                autoComplete="email"
                                 required
                             />
                         </div>
                     </div>
 
                     <div className="form-group">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                            <label className="form-label" style={{ marginBottom: 0 }}>Password</label>
-                            <Link to="/forgot-password" style={{ color: '#3b82f6', fontSize: '0.75rem', fontWeight: 600, textDecoration: 'none' }}>Forgot?</Link>
+                        <div className="form-label-row">
+                            <label className="form-label" htmlFor="login-password">Password</label>
+                            <Link to="/forgot-password" className="auth-inline-link">Forgot password?</Link>
                         </div>
                         <div className="input-container">
                             <Lock className="input-icon" size={18} />
                             <input
-                                type={showPassword ? "text" : "password"}
+                                id="login-password"
+                                type={showPassword ? 'text' : 'password'}
                                 className="input-field with-eye"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="••••••••"
+                                placeholder="Enter password"
+                                autoComplete="current-password"
                                 required
                             />
-                            <button 
+                            <button
                                 type="button"
                                 className="eye-button"
                                 onClick={() => setShowPassword(!showPassword)}
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
                             >
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
@@ -137,14 +158,14 @@ const Login = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="auth-button"
+                        className="auth-button auth-button-primary"
                     >
                         {loading ? 'Signing in...' : 'Sign in'}
                     </button>
                 </form>
 
                 <p className="auth-footer">
-                    No account? 
+                    No account?
                     <Link to="/register" className="auth-link">Sign up</Link>
                 </p>
             </motion.div>

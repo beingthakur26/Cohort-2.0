@@ -1,0 +1,813 @@
+# Perplexity/Claude SaaS Project - Visual TLDR
+
+This file is the quick visual guide for understanding the whole project.
+
+Goal:
+Build a real SaaS AI answer engine:
+
+```txt
+Login user
+  -> ask question
+  -> search web
+  -> scrape sources
+  -> generate cited AI answer
+  -> stream answer live
+  -> save chat history
+  -> show library/settings/billing later
+```
+
+===============================================================================
+1. ONE-LINE PROJECT MAP
+===============================================================================
+
+```txt
+Frontend React/Vite
+  |
+  | calls APIs
+  v
+Backend Express
+  |
+  +-> MongoDB stores users/chats/messages/sources
+  +-> Tavily/Brave/Exa searches web
+  +-> Jina/Firecrawl extracts page content
+  +-> Groq/OpenAI/Claude generates answer
+  +-> Redis caches/rate-limits later
+```
+
+===============================================================================
+2. FULL SYSTEM DIAGRAM
+===============================================================================
+
+```txt
+                                  USER
+                                   |
+                                   v
+                        +----------------------+
+                        |  React/Vite Frontend |
+                        +----------+-----------+
+                                   |
+                                   | HTTP / SSE
+                                   v
+                        +----------------------+
+                        |   Express Backend    |
+                        +----------+-----------+
+                                   |
+        +--------------------------+--------------------------+
+        |                          |                          |
+        v                          v                          v
++---------------+          +---------------+          +----------------+
+| MongoDB       |          | External AI   |          | External Search |
+| users         |          | Groq/OpenAI   |          | Tavily/Brave    |
+| chats         |          | Anthropic     |          | Exa             |
+| messages      |          +---------------+          +----------------+
+| sources       |                   |
+| usage         |                   v
++---------------+          +----------------+
+                           | Web Scraping   |
+                           | Jina/Firecrawl |
+                           +----------------+
+```
+
+===============================================================================
+3. CORE FEATURE: ANSWER ENGINE WORKFLOW
+===============================================================================
+
+This is the most important workflow in the whole project.
+
+```txt
+User writes question
+  |
+  v
+Frontend sends:
+POST /api/search
+{ query, mode, model, chatId }
+  |
+  v
+Backend validates query
+  |
+  v
+Optional query rewrite
+"best laptop" -> "best laptops 2026 reviews performance battery"
+  |
+  v
+Search web using Tavily/Brave/Exa
+  |
+  v
+Get top URLs + titles + snippets
+  |
+  v
+Scrape top URLs using Jina Reader/Firecrawl
+  |
+  v
+Build numbered sources
+[1] source A
+[2] source B
+[3] source C
+  |
+  v
+Send prompt + source content to Groq/OpenAI/Claude
+  |
+  v
+LLM returns answer with citations
+"RAG combines retrieval and generation [1][2]."
+  |
+  v
+Backend streams tokens to frontend using SSE
+  |
+  v
+Frontend shows live answer + source cards
+  |
+  v
+MongoDB saves chat, messages, sources
+```
+
+===============================================================================
+4. BACKEND REQUEST PIPELINE DIAGRAM
+===============================================================================
+
+```txt
+POST /api/search
+      |
+      v
++----------------------+
+| search.routes.js     |
++----------+-----------+
+           |
+           v
++----------------------+
+| search.controller.js |
++----------+-----------+
+           |
+           +--> search.validator.js
+           |        checks query is valid
+           |
+           +--> usage.service.js
+           |        checks free/pro usage limit
+           |
+           +--> queryRewrite.service.js
+           |        improves search query
+           |
+           +--> search.service.js
+           |        calls Tavily/Brave/Exa
+           |
+           +--> scraper.service.js
+           |        calls Jina/Firecrawl
+           |
+           +--> citation.service.js
+           |        numbers and validates sources
+           |
+           +--> groq.service.js
+           |        generates AI answer
+           |
+           +--> stream.service.js
+           |        streams tokens with SSE
+           |
+           +--> chat.service.js
+                    saves chat/messages/sources
+```
+
+===============================================================================
+5. FRONTEND WORKFLOW DIAGRAM
+===============================================================================
+
+```txt
+Home.jsx
+  |
+  | user types query
+  v
+ChatInput.jsx
+  |
+  | on submit
+  v
+useChat.js
+  |
+  | calls API
+  v
+chat.api.js
+  |
+  | POST /api/search or /api/search/stream
+  v
+Backend
+  |
+  | returns sources + answer tokens
+  v
+useChat.js updates state
+  |
+  +--> ChatThread.jsx
+  |      shows full conversation
+  |
+  +--> MessageBubble.jsx
+  |      shows user/AI messages
+  |
+  +--> StreamingAnswer.jsx
+  |      renders live AI answer
+  |
+  +--> CitationBadge.jsx
+  |      turns [1] into clickable source badge
+  |
+  +--> SourcePanel.jsx
+         shows sources on right side
+```
+
+===============================================================================
+6. SCREEN FLOW DIAGRAM
+===============================================================================
+
+```txt
+Not logged in
+  |
+  +--> /login
+  +--> /register
+
+Logged in
+  |
+  v
+AppLayout
+  |
+  +--> /              Home / new search
+  |
+  +--> /chat/:id      Chat thread with answer + sources
+  |
+  +--> /library       Saved chats/history
+  |
+  +--> /settings      Profile, plan, preferences
+  |
+  +--> /billing       Plans and usage later
+  |
+  +--> /files         Uploaded files later
+  |
+  +--> /spaces        Workspaces later
+  |
+  +--> /share/:id     Public answer page later
+```
+
+===============================================================================
+7. DESKTOP UI LAYOUT DIAGRAM
+===============================================================================
+
+```txt
++----------------------+--------------------------------+----------------------+
+| Sidebar              | Main Chat Area                 | Source Panel         |
+| 240px                | flexible width                 | 320-360px            |
+|                      |                                |                      |
+| + New Chat           | User question                  | Sources              |
+| Recent chats         |                                | [1] domain.com       |
+| Spaces               | AI answer with citations       | title + snippet      |
+| Library              | "Answer text [1][2]"           |                      |
+| Settings             |                                | [2] domain.com       |
+|                      | Follow-up input                | title + snippet      |
+| User menu            |                                |                      |
++----------------------+--------------------------------+----------------------+
+```
+
+Mobile layout:
+
+```txt
+Topbar
+  |
+  v
+Chat/answer content
+  |
+  v
+Sources below answer
+  |
+  v
+Bottom chat input
+```
+
+===============================================================================
+8. DATABASE MODEL MAP
+===============================================================================
+
+```txt
+User
+  |
+  +--> many Chats
+          |
+          +--> many Messages
+          |       |
+          |       +--> role: user / ai
+          |       +--> content
+          |
+          +--> many Sources
+                  |
+                  +--> citationId: 1
+                  +--> title
+                  +--> url
+                  +--> domain
+                  +--> snippet
+
+User
+  |
+  +--> Usage
+  |     +--> searchesUsed
+  |     +--> tokensUsed
+  |     +--> daily limit
+  |
+  +--> Subscription
+        +--> plan: free/pro
+        +--> status
+        +--> renewal date
+```
+
+Later:
+
+```txt
+User
+  +--> Files
+  +--> Spaces
+  +--> SharedPages
+  +--> ApiKeys
+```
+
+===============================================================================
+9. WHAT IS ALREADY CREATED
+===============================================================================
+
+Frontend already created:
+
+```txt
+Frontend/src/
+  app/
+    App.jsx
+    app.routes.jsx
+    app.store.js
+    index.css
+
+  features/auth/
+    Login.jsx
+    Register.jsx
+    Protected.jsx
+    useAuth.js
+    auth.api.js
+    auth.slice.js
+
+  components/layout/
+    AppLayout.jsx       empty
+    Sidebar.jsx         empty
+    Topbar.jsx          empty
+    UserMenu.jsx        empty
+
+  components/ui/
+    Button.jsx          empty
+    Input.jsx           empty
+    Modal.jsx           empty
+    Tabs.jsx            empty
+    Dropdown.jsx        empty
+    EmptyState.jsx      empty
+
+  features/chat/
+    many files created, mostly empty
+
+  features/library/
+    files created, empty
+
+  features/settings/
+    files created, empty
+```
+
+Backend already created:
+
+```txt
+Backend/src/
+  app.js
+  config/database.js
+
+  controllers/
+    auth.controller.js
+
+  routes/
+    auth.routes.js
+
+  middlewares/
+    auth.middleware.js
+    error.middleware.js
+    validator.middleware.js
+
+  models/
+    user.model.js
+    chat.model.js
+    message.model.js
+
+  services/
+    ai.services.js
+    mail.service.js
+
+  validators/
+    auth.validator.js
+
+  utils/
+    ApiError.js
+    asyncHandler.js
+```
+
+===============================================================================
+10. WHAT IS REMAINING TO CREATE
+===============================================================================
+
+Backend core missing:
+
+```txt
+controllers/
+  search.controller.js
+  chat.controller.js
+  user.controller.js
+  settings.controller.js
+
+routes/
+  search.routes.js
+  chat.routes.js
+  user.routes.js
+  settings.routes.js
+
+services/
+  groq.service.js
+  search.service.js
+  scraper.service.js
+  citation.service.js
+  queryRewrite.service.js
+  stream.service.js
+  chat.service.js
+  usage.service.js
+
+models/
+  source.model.js
+  usage.model.js
+
+validators/
+  search.validator.js
+  chat.validator.js
+  user.validator.js
+
+middlewares/
+  rateLimit.middleware.js
+```
+
+Backend SaaS later:
+
+```txt
+controllers/
+  billing.controller.js
+  file.controller.js
+  space.controller.js
+  share.controller.js
+
+routes/
+  billing.routes.js
+  file.routes.js
+  space.routes.js
+  share.routes.js
+
+models/
+  subscription.model.js
+  file.model.js
+  space.model.js
+  sharedPage.model.js
+  apiKey.model.js
+
+services/
+  billing.service.js
+  file.service.js
+  space.service.js
+  cache.service.js
+```
+
+Frontend missing or empty to implement:
+
+```txt
+components/layout/
+  AppLayout.jsx
+  Sidebar.jsx
+  Topbar.jsx
+  UserMenu.jsx
+
+components/ui/
+  Button.jsx
+  Input.jsx
+  Modal.jsx
+  Tabs.jsx
+  Dropdown.jsx
+  EmptyState.jsx
+  Spinner.jsx
+  Skeleton.jsx
+  Tooltip.jsx
+  Badge.jsx
+
+features/chat/
+  pages/Home.jsx
+  pages/ChatThread.jsx
+  components/ChatInput.jsx
+  components/MessageBubble.jsx
+  components/SourcePanel.jsx
+  components/CitationBadge.jsx
+  components/StreamingAnswer.jsx
+  components/SuggestedPrompts.jsx
+  hook/useChat.js
+  service/chat.api.js
+
+features/library/
+  pages/Library.jsx
+  components/ChatListItem.jsx
+  components/LibrarySearch.jsx
+  components/LibraryFilters.jsx
+  hook/useLibrary.js
+  service/library.api.js
+
+features/settings/
+  pages/Settings.jsx
+  components/ProfileSettings.jsx
+  components/AccountPlan.jsx
+  components/DangerZone.jsx
+  hook/useSettings.js
+  service/settings.api.js
+
+lib/
+  axios.js
+  constants.js
+  citationParser.js
+  streamParser.js
+  markdown.js
+  formatDate.js
+
+data/
+  promptSuggestions.js
+  models.js
+  searchModes.js
+```
+
+Important frontend naming fix:
+
+```txt
+Current:
+features/chat/services/chat.api.js
+
+Better:
+features/chat/service/chat.api.js
+```
+
+===============================================================================
+11. FEATURE MAP
+===============================================================================
+
+```txt
+AUTH
+  register
+  verify email
+  login
+  logout
+  forgot/reset password
+  protected routes
+
+SEARCH / ANSWER ENGINE
+  query input
+  web search
+  scraping
+  source ranking
+  AI answer
+  citations
+
+STREAMING
+  backend SSE
+  frontend live answer
+  loading cursor
+
+CHAT HISTORY
+  save chat
+  save messages
+  save sources
+  continue follow-up
+
+LIBRARY
+  all chats
+  starred
+  shared
+  archived
+  search history
+
+SETTINGS
+  profile
+  security
+  model preference
+  privacy
+  delete chats/account
+
+SAAS
+  usage limits
+  rate limiting
+  free/pro plans
+  billing
+
+LATER ADVANCED
+  file upload
+  spaces/workspaces
+  public share pages
+  API keys
+```
+
+===============================================================================
+12. EXTERNAL APIs YOU NEED
+===============================================================================
+
+```txt
+AI / LLM:
+  Groq first
+  OpenAI optional
+  Anthropic optional
+
+Search:
+  Tavily first
+  Brave optional
+  Exa optional
+
+Scraping:
+  Jina Reader first
+  Firecrawl optional
+
+Database:
+  MongoDB Atlas
+
+Cache / limits later:
+  Redis
+
+Email:
+  Nodemailer + Gmail/SMTP
+
+Billing later:
+  Stripe or Razorpay
+
+File storage later:
+  Cloudinary or AWS S3
+```
+
+Environment variables:
+
+```txt
+PORT=
+MONGODB_URI=
+JWT_SECRET=
+FRONTEND_URL=
+
+GROQ_API_KEY=
+GROQ_MODEL=
+
+TAVILY_API_KEY=
+BRAVE_SEARCH_API_KEY=
+EXA_API_KEY=
+
+FIRECRAWL_API_KEY=
+REDIS_URL=
+
+SMTP_HOST=
+SMTP_PORT=
+SMTP_USER=
+SMTP_PASS=
+
+STRIPE_SECRET_KEY=
+RAZORPAY_KEY_ID=
+CLOUDINARY_CLOUD_NAME=
+```
+
+===============================================================================
+13. COLOR / UI DESIGN MAP
+===============================================================================
+
+Use a serious dark SaaS interface.
+
+```txt
+Background:
+  #0F1117
+
+Main surface:
+  #161A22
+
+Card/source surface:
+  #1A1D27
+
+Input surface:
+  #202634
+
+Border:
+  #2B3241
+
+Main text:
+  #F3F5F7
+
+Muted text:
+  #A7ADB8
+
+Subtle text:
+  #737B8C
+
+Accent:
+  #20B2AA
+
+Accent hover:
+  #37C9C0
+
+Danger:
+  #EF4444
+```
+
+UI rules:
+
+```txt
+Do:
+  search box first
+  source cards visible
+  inline citation badges
+  skeleton loading
+  dense useful layout
+  responsive mobile layout
+
+Avoid:
+  marketing landing page as first screen
+  too many decorative cards
+  huge hero text inside app
+  purple-heavy AI look
+  hidden citations
+```
+
+===============================================================================
+14. BUILD ORDER DIAGRAM
+===============================================================================
+
+```txt
+PHASE 1 - Backend core
+  |
+  +-> POST /api/search
+  +-> search.service.js
+  +-> scraper.service.js
+  +-> groq.service.js
+  +-> citation.service.js
+  |
+  v
+PHASE 2 - Frontend core
+  |
+  +-> Home.jsx
+  +-> ChatInput.jsx
+  +-> chat.api.js
+  +-> useChat.js
+  +-> ChatThread.jsx
+  +-> SourcePanel.jsx
+  |
+  v
+PHASE 3 - Streaming
+  |
+  +-> stream.service.js
+  +-> /api/search/stream
+  +-> StreamingAnswer.jsx
+  |
+  v
+PHASE 4 - Save history
+  |
+  +-> chat.routes.js
+  +-> chat.controller.js
+  +-> source.model.js
+  +-> Sidebar chat list
+  +-> Library page
+  |
+  v
+PHASE 5 - SaaS layer
+  |
+  +-> usage.model.js
+  +-> rateLimit.middleware.js
+  +-> settings APIs
+  +-> billing
+  |
+  v
+PHASE 6 - Advanced
+  |
+  +-> files
+  +-> spaces
+  +-> public sharing
+  +-> API keys
+```
+
+===============================================================================
+15. SIMPLE MENTAL MODEL
+===============================================================================
+
+Think about the app in 4 layers:
+
+```txt
+1. UI Layer
+   React pages and components.
+
+2. API Layer
+   Frontend services call backend routes.
+
+3. Intelligence Layer
+   Search + scrape + LLM + citations + streaming.
+
+4. SaaS Layer
+   Auth + history + usage + billing + settings.
+```
+
+Most important line:
+
+```txt
+The project becomes valuable when this works:
+
+query -> search -> scrape -> AI answer -> citations -> stream -> save
+```
+
